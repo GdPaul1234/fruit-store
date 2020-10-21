@@ -9,24 +9,21 @@
 
     <!-- Formulaire d'inscription -->
     <form @submit.prevent="registerUser">
-      <div>
-        <label for="email">e-mail :</label>
+      
+        <label for="email">e-mail</label>
         <input
           type="email"
           v-model="newUser.email"
           placeholder="jonh.doe@example.com"
           required
         />
-      </div>
-      <div>
-        <label for="password">mot de passe :</label>
+        <label for="password">mot de passe</label>
         <input
           type="password"
           v-model="newUser.password"
           placeholder="********"
           required
         />
-      </div>
       <div class="button">
         <button type="submit">S'inscrire</button>
       </div>

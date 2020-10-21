@@ -10,24 +10,22 @@
 
     <!-- Formulaire de connexion -->
     <form @submit.prevent="loginUser">
-      <div>
-        <label for="email">e-mail :</label>
-        <input
-          type="email"
-          v-model="user.email"
-          placeholder="jonh.doe@example.com"
-          required
-        />
-      </div>
-      <div>
-        <label for="password">mot de passe :</label>
-        <input
-          type="password"
-          v-model="user.password"
-          placeholder="********"
-          required
-        />
-      </div>
+      <label for="email">e-mail</label>
+      <input
+        type="email"
+        v-model="user.email"
+        placeholder="jonh.doe@example.com"
+        required
+      />
+
+      <label for="password">mot de passe</label>
+      <input
+        type="password"
+        v-model="user.password"
+        placeholder="********"
+        required
+      />
+
       <div class="button">
         <button type="submit">Se connecter</button>
       </div>
