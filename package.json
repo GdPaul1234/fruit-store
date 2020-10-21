@@ -1,0 +1,22 @@
+{
+  "name": "fruit-store",
+  "version": "0.0.1",
+  "description": "gestion d'un site de e-commerce vendant des fruits et légumes",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "express-session": "^1.17.1",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "pg": "^8.4.1"
+  },
+  "author": "CGSoft",
+  "license": "ISC"
+}
