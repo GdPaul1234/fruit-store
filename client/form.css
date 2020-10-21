@@ -43,7 +43,7 @@ form div + div {
     margin-left: 120px; /* même taille que les étiquettes */
   }
   
-  button {
+  form button {
     /* Cette marge supplémentaire représente grosso modo le même espace que celui
        entre les étiquettes et les champs texte */
     margin-left: 0.5em;
