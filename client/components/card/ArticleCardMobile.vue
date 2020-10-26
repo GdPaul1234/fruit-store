@@ -41,12 +41,12 @@ module.exports = {
   methods: {
     // déclenche l’événement add-to-panier en transmettant l’id de l’article
     addToPanier(articleId) {
-      this.$emit("add-to-panier", articleId);
+      this.$emit("add-to-home-panier", articleId);
     },
 
     // déclenche l’événement remove-from-panier en transmettant l’id de l’article
     removeFromPanier(articleId) {
-      this.$emit("remove-from-panier", articleId);
+      this.$emit("remove-from-home-panier", articleId);
     },
   },
 };

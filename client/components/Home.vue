@@ -2,7 +2,9 @@
   <div>
     <p>bla bla bla</p>
     <component :is="articleComponent"
-     :articles="articles" :panier="panier">
+     :articles="articles" :panier="panier"
+     @add-to-home-panier="addToHomePanier"
+     @remove-from-home-panier="removeFromHomePanier" >
     </component>
   </div>
 </template>
@@ -35,7 +37,17 @@ module.exports = {
        this.articleComponent = (screen.width <= 530) ? 'ArticleCardMobile' : 'ArticleCard'
        });
   },
-  methods: {},
+  methods: {
+    // déclenche l’événement add-to-panier en transmettant l’id de l’article
+    addToHomePanier(articleId) {
+      this.$emit("add-to-panier", articleId);
+    },
+
+    // déclenche l’événement remove-from-panier en transmettant l’id de l’article
+    removeFromHomePanier(articleId) {
+      this.$emit("remove-from-panier", articleId);
+    },
+  },
 };
 </script>
 
