@@ -39,10 +39,10 @@ header {
 }
 
 header h1 {
-    text-align : center;
-    margin-top : 0;
+    text-align   : center;
+    margin-top   : 0;
     margin-bottom: 5px;
-    padding-top: 1rem;
+    padding-top  : 1rem;
 }
 
 /*  nav ----------------------------------------------------------- */
@@ -51,8 +51,8 @@ nav {
     padding-bottom: 10px;
     text-align    : center;
     /* le contenu de la nav ne dépasse pas 1 ligne */
-    white-space: nowrap; 
-    overflow: auto;
+    white-space   : nowrap;
+    overflow      : auto;
 }
 
 nav a,
@@ -60,14 +60,15 @@ nav div {
     display        : block;
     text-align     : center;
     padding        : 0 10px 10px 10px;
-    text-decoration: none;   /* retirer le surlignement des liens */
-    display        : inline; 
+    text-decoration: none;
+    /* retirer le surlignement des liens */
+    display        : inline;
 }
 
 /* BODY  ========================================================= */
 main {
-    margin      : auto;
-    margin-top  : 20px;
+    margin    : auto;
+    margin-top: 20px;
 }
 
 /*  article ------------------------------------------------------- */
@@ -75,7 +76,8 @@ main {
     display              : grid;
     grid-template-columns: repeat(auto-fit, 236.25px);
     grid-gap             : 1rem;
-    justify-content: center; 
+    justify-content      : center;
+    margin               : 0 1rem;
 }
 
 article {
@@ -83,4 +85,11 @@ article {
     border-radius   : 10px;
     box-shadow      : 0 2px 2px -1px rgba(0, 0, 0, 0.4);
     padding         : 10px;
+}
+
+@media screen and (max-width: 530px) {
+    .article-container {
+        grid-template-columns: auto;
+    }
+
 }

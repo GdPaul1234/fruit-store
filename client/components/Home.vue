@@ -1,79 +1,43 @@
 <template>
   <div>
-    <div class="article-container">
-      <article v-for="article in articles" :key="article.id">
-        <img :src="article.image" />
-        <div>
-          <div class="title">
-            <strong>{{ article.name }}</strong>
-            {{ article.description }}
-          </div>
-          <div class="price">
-            {{ article.price }} €
-            <span class="button-container">
-              <!-- Afficher le bouton "Retirer du panier" si l'article est déja dedans... -->
-              <button
-                @click="removeFromPanier(article.id)"
-                v-if="panier.articles.some((a) => a.id === article.id)"
-              >
-                Retirer du panier
-              </button>
-              <!-- ... sinon, bouton HTML “ajouter au panier”, à droite de chaque article -->
-              <button @click="addToPanier(article.id)" v-else>
-                Ajouter au panier
-              </button>
-            </span>
-          </div>
-        </div>
-      </article>
-    </div>
+    <p>bla bla bla</p>
+    <component :is="articleComponent"
+     :articles="articles" :panier="panier">
+    </component>
   </div>
 </template>
 
 <script>
+const ArticleCard = window.httpVueLoader("./components/card/ArticleCard.vue");
+const ArticleCardMobile = window.httpVueLoader("./components/card/ArticleCardMobile.vue");
+
 module.exports = {
+  components: {
+    ArticleCard,
+    ArticleCardMobile
+  },
   props: {
     articles: { type: Array, default: [] },
     panier: { type: Object },
   },
   data() {
-    return {};
+    return {
+      articleComponent: 'ArticleCard'
+    };
   },
-  methods: {
-    // déclenche l’événement add-to-panier en transmettant l’id de l’article
-    addToPanier(articleId) {
-      this.$emit("add-to-panier", articleId);
-    },
+  mounted () {
+    // Déterminer si on est sur un petit écran (max-width: 530px)
+    this.articleComponent = (screen.width <= 530) ? 'ArticleCardMobile' : 'ArticleCard'
 
-    // déclenche l’événement remove-from-panier en transmettant l’id de l’article
-    removeFromPanier(articleId) {
-      this.$emit("remove-from-panier", articleId);
-    },
+    // articleComponent se met à jour à chaque redimensionnement de l'écran
+    window.addEventListener("resize",
+     () => {
+       this.articleComponent = (screen.width <= 530) ? 'ArticleCardMobile' : 'ArticleCard'
+       });
   },
+  methods: {},
 };
 </script>
 
 <style scoped>
-article .title {
-  height: 52.8px;
-  overflow: hidden;
-
-  font-size: 14px;
-  margin-bottom: 1rem;
-  line-height: 18px;
-}
-
-article .price {
-  font-size: 16px;
-  font-weight: 700;
-}
-
-img {
-  width: 100%;
-  height: auto;
-}
-
-.button-container {
-  float: right;
-}
 </style>
