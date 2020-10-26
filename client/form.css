@@ -7,20 +7,20 @@ form div+div {
 
 form {
   display              : grid;
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: auto 1fr;
   grid-gap             : 16px;
 
-  margin: 0 auto;
-  padding: 1rem;
+  margin   : 0 auto;
+  padding  : 1rem;
   max-width: 400px;
 
-  border       : 1px solid #ccc;
-  border-radius: 1em;
-  background   : white;
+  border          : 1px solid #ccc;
+  border-radius   : 1em;
+  background-image: radial-gradient(circle farthest-corner at 10% 20%, rgba(234, 249, 249, 0.67) 0.1%, rgba(239, 249, 251, 0.63) 90.1%);
 }
 
 label {
-  text-align: right;
+  text-align : right;
   grid-column: 1 / 2;
   /* label prend la place entre col 1 et 2 */
 }
@@ -34,9 +34,29 @@ input,
 input {
   /* Pour harmoniser le look & feel des bordures des champs texte */
   border: 1px solid #999;
+  width: 100%;
 }
 
 input:focus {
   /* Pour souligner légèrement les éléments actifs */
   border-color: #000;
+}
+
+@media screen and (max-width: 400px) {
+  form {
+    grid-template-columns: 1fr;
+    grid-gap: 5px;
+    margin: 0 1rem;
+  }
+
+  label {
+    text-align: center;
+  }
+
+  input,
+  .button {
+    grid-column: 1 / 2;
+    text-align: center;
+  }
+
 }

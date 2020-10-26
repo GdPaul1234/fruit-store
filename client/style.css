@@ -25,6 +25,7 @@ body {
     z-index : -1;
 }
 
+/* HEADER ========================================================= */
 header {
     background-color: #4158D0;
     background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
@@ -40,31 +41,36 @@ header {
 header h1 {
     text-align : center;
     margin-top : 0;
-    padding-top: 10px;
+    margin-bottom: 5px;
+    padding-top: 1rem;
 }
 
+/*  nav ----------------------------------------------------------- */
 nav {
     margin        : auto;
-    width         : 50%;
     padding-bottom: 10px;
     text-align    : center;
+    /* le contenu de la nav ne dépasse pas 1 ligne */
+    white-space: nowrap; 
+    overflow: auto;
 }
 
 nav a,
 nav div {
     display        : block;
     text-align     : center;
-    padding        : 0 16px 10px 16px;
-    text-decoration: none;
-    display        : inline;
-    padding-bottom : 10px;
+    padding        : 0 10px 10px 10px;
+    text-decoration: none;   /* retirer le surlignement des liens */
+    display        : inline; 
 }
 
+/* BODY  ========================================================= */
 main {
     margin      : auto;
     margin-top  : 20px;
 }
 
+/*  article ------------------------------------------------------- */
 .article-container {
     display              : grid;
     grid-template-columns: repeat(auto-fit, 236.25px);
