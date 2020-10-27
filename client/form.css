@@ -1,11 +1,11 @@
 /* mix entre 
   https://developer.mozilla.org/fr/docs/Web/Guide/HTML/Formulaires/Mon_premier_formulaire_HTML
   et https://webdesign.tutsplus.com/tutorials/how-to-build-web-form-layouts-with-css-grid--cms-28776 */
-form div+div {
+form.login div+div {
   margin-top: 1em;
 }
 
-form {
+form.login {
   display              : grid;
   grid-template-columns: auto 1fr;
   grid-gap             : 16px;
@@ -19,42 +19,41 @@ form {
   background-image: radial-gradient(circle farthest-corner at 10% 20%, rgba(234, 249, 249, 0.67) 0.1%, rgba(239, 249, 251, 0.63) 90.1%);
 }
 
-form label {
+form.login label {
   text-align : right;
   grid-column: 1 / 2;
   /* label prend la place entre col 1 et 2 */
 }
 
-form input,
-form .button {
+form.login input,
+form.login .button {
   grid-column: 2 / 3;
   /* element prend la place entre col 2 et 3 */
 }
 
-form input {
+form.login input {
   /* Pour harmoniser le look & feel des bordures des champs texte */
   border: 1px solid #999;
   width: 100%;
 }
 
-form input:focus {
+form.login input:focus {
   /* Pour souligner légèrement les éléments actifs */
   border-color: #000;
 }
 
 @media screen and (max-width: 400px) {
-  form {
+  form.login {
     grid-template-columns: 1fr;
     grid-gap: 5px;
-    margin: 0 1rem;
   }
 
-  form label {
+  form.login label {
     text-align: center;
   }
 
-  form input,
-  form .button {
+  form.login input,
+  form.login .button {
     grid-column: 1 / 2;
     text-align: center;
   }

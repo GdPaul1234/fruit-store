@@ -1,6 +1,6 @@
 <template>
   <div class="article-container">
-    <article v-for="item in getArticleDetail()" :key="item.id">
+    <article v-for="item in articlesDetail" :key="item.id">
       <img :src="item.image" />
       <div class="content">
         <div class="title">
@@ -16,13 +16,14 @@
               <button @click="modifyPanierQuantity(item.id, item.quantity)">
                 Modifier quantité
               </button>
+              <button @click="removeFromPanier(item.id)">🗑️</button>
             </span>
           </div>
         </div>
         <!--Edit on : modifier la quantité du produit -->
         <div v-else>
           <div class="button-container">
-            <input v-model="editingArticle.quantity" type="number" min="1" />
+            <input v-model="editingArticle.quantity" type="number" min="1" max="999"/>
             <span class="price"
               >: {{ editingArticle.quantity * item.price }} €</span
             >
@@ -48,13 +49,21 @@ module.exports = {
         id: -1,
         quantity: 0,
       },
+      articlesDetail: []
     };
+  },
+  watch : {
+    panier: {
+      immediate: true,
+      deep: true,
+      handler: 'getArticleDetail'
+    }
   },
   methods: {
     // Obtenir détail article
-    getArticleDetail() {
-      var articlesPanier = this.panier.articles;
-      var result = [];
+    getArticleDetail(panier) {
+      var articlesPanier = panier.articles;
+      this.articlesDetail = [];
 
       for (const item of articlesPanier) {
         let articleDetail = this.articles.find((a) => a.id === item.id);
@@ -66,9 +75,16 @@ module.exports = {
           price: articleDetail.price,
           quantity: item.quantity,
         };
-        result.push(article);
+         this.articlesDetail.push(article);
+
+         // mettre à jour détail panier au composant parent
+         this.$emit('get-panier-price', this.articlesDetail)
       }
-      return result;
+    },
+
+    // déclenche l’événement remove-from-panier en transmettant l’id de l’article
+    removeFromPanier(articleId) {
+      this.$emit("remove-from-panier-panier", articleId);
     },
 
     // Met l'article en mode édition
@@ -94,7 +110,7 @@ module.exports = {
 
 <style scoped>
 .article-container {
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, 375px);
 }
 
 article {
@@ -123,6 +139,10 @@ img {
   width: 80px;
   height: auto;
   margin-right: 10px;
+}
+
+input {
+  width: 50px; /* 3 chiffres max */
 }
 
 .button-container {

@@ -4,12 +4,13 @@
 
     <!-- Gestion des erreurs -->
     <div class="error" v-if="lerror">
-      {{ lerror_reason }} <a href="/#/register">Créer un nouveau compte</a>
+      {{ lerror_reason }} <br />
+      <a href="/#/register">Créer un nouveau compte</a>
     </div>
     <div class="success" v-if="lsuccess">Connexion réussie !</div>
 
     <!-- Formulaire de connexion -->
-    <form @submit.prevent="loginUser">
+    <form class="login" @submit.prevent="loginUser">
       <label for="email">e-mail</label>
       <input
         type="email"
@@ -65,13 +66,15 @@ h2 {
   background-color: #ffdddd;
   border-left: 6px solid #f44336;
   padding: 5px;
-  margin-bottom: 20px;
+  margin: 0 auto 20px auto;
+  max-width: 400px;
 }
 
 .success {
   background-color: #e7f3fe;
   border-left: 6px solid #2196f3;
   padding: 5px;
-  margin-bottom: 20px;
+  margin: 0 auto 20px auto;
+  max-width: 400px;
 }
 </style>

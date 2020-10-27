@@ -92,4 +92,8 @@ article {
         grid-template-columns: auto;
     }
 
+    main {
+        margin: 0 1em;
+    }
+
 }

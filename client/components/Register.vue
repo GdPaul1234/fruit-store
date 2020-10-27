@@ -8,7 +8,7 @@
     </div>
 
     <!-- Formulaire d'inscription -->
-    <form @submit.prevent="registerUser">
+    <form class="login" @submit.prevent="registerUser">
       
         <label for="email">e-mail</label>
         <input
@@ -63,13 +63,15 @@ h2 {
   background-color: #ffdddd;
   border-left: 6px solid #f44336;
   padding: 5px;
-  margin-bottom: 20px;
+  margin: 0 auto 20px auto;
+  max-width: 400px;
 }
 
 .success {
   background-color: #e7f3fe;
   border-left: 6px solid #2196f3;
   padding: 5px;
-  margin-bottom: 20px;
+  margin: 0 auto 20px auto;
+  max-width: 400px;
 }
 </style>

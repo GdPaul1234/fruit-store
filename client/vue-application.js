@@ -110,8 +110,7 @@ var app = new Vue({
         this.payment = true
 
         setInterval(() => {
-          location.href = "http://localhost:3000/#/"
-          location.reload()
+          location.href = "/#/"
         }, 3000);
       } catch (error) {
         this.loginError = true
