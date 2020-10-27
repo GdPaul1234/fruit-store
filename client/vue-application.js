@@ -1,11 +1,13 @@
 const Home = window.httpVueLoader('./components/Home.vue')
 const Register = window.httpVueLoader('./components/Register.vue')
 const Login = window.httpVueLoader('./components/Login.vue')
+const Panier = window.httpVueLoader('./components/Panier.vue')
 
 const routes = [
   { path: '/', component: Home },
   { path: '/register', component: Register },
-  { path: '/login', component: Login }
+  { path: '/login', component: Login },
+  { path: '/panier', component: Panier }
 ]
 
 const router = new VueRouter({
@@ -82,7 +84,7 @@ var app = new Vue({
 
     // Effectuer la requête à l’API POST /api/panier afin d’ajouter l’article au panier
     async addToPanier(articleId) {
-      const res = await axios.post('/api/panier', {id: articleId, quantity:1})
+      const res = await axios.post('/api/panier', { id: articleId, quantity: 1 })
       this.panier.articles.push(res.data)
     },
 
@@ -92,6 +94,29 @@ var app = new Vue({
       const index = this.panier.articles.findIndex(a => a.id === articleId)
       this.panier.articles.splice(index, 1)
     },
+
+    // Modifer la quantité d'un article du panier à l'aide de la requête PUT /api/panier
+    async modifyArticlePanier(editArticle) {
+      await axios.put('/api/panier/' + editArticle.id, { quantity: editArticle.quantity })
+      const index = this.panier.articles.findIndex(a => a.id === editArticle.id)
+      this.panier.articles[index]['quantity'] = editArticle.quantity
+    },
+
+    // Effectuer la requête à l’API POST /api/panier/payer pour payer le panier et supprimer la session
+    async payPanier() {
+      try {
+        await axios.post('api/panier/pay')
+        this.loginError = false
+        this.payment = true
+
+        setInterval(() => {
+          location.href = "http://localhost:3000/#/"
+          location.reload()
+        }, 3000);
+      } catch (error) {
+        this.loginError = true
+      }
+    }
 
   }
 })

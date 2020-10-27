@@ -19,25 +19,25 @@ form {
   background-image: radial-gradient(circle farthest-corner at 10% 20%, rgba(234, 249, 249, 0.67) 0.1%, rgba(239, 249, 251, 0.63) 90.1%);
 }
 
-label {
+form label {
   text-align : right;
   grid-column: 1 / 2;
   /* label prend la place entre col 1 et 2 */
 }
 
-input,
-.button {
+form input,
+form .button {
   grid-column: 2 / 3;
   /* element prend la place entre col 2 et 3 */
 }
 
-input {
+form input {
   /* Pour harmoniser le look & feel des bordures des champs texte */
   border: 1px solid #999;
   width: 100%;
 }
 
-input:focus {
+form input:focus {
   /* Pour souligner légèrement les éléments actifs */
   border-color: #000;
 }
@@ -49,12 +49,12 @@ input:focus {
     margin: 0 1rem;
   }
 
-  label {
+  form label {
     text-align: center;
   }
 
-  input,
-  .button {
+  form input,
+  form .button {
     grid-column: 1 / 2;
     text-align: center;
   }

@@ -29,12 +29,12 @@ module.exports = {
   },
   mounted () {
     // Déterminer si on est sur un petit écran (max-width: 530px)
-    this.articleComponent = (screen.width <= 530) ? 'ArticleCardMobile' : 'ArticleCard'
+    this.articleComponent = (screen.width < 530) ? 'ArticleCardMobile' : 'ArticleCard'
 
     // articleComponent se met à jour à chaque redimensionnement de l'écran
     window.addEventListener("resize",
      () => {
-       this.articleComponent = (screen.width <= 530) ? 'ArticleCardMobile' : 'ArticleCard'
+       this.articleComponent = (screen.width < 530) ? 'ArticleCardMobile' : 'ArticleCard'
        });
   },
   methods: {
