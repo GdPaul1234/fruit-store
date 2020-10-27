@@ -16,7 +16,6 @@
     </div>
     <!-- Panier rempli -->
     <article-card-panier
-      v-else
       :panier="panier"
       :articles="articles"
       @remove-from-panier-panier="removeFromPanierPanier"
