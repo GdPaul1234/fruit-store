@@ -33,6 +33,8 @@ var app = new Vue({
     loginError: false,
     loginErrorReason: '',
 
+    paiementError: false,
+
     connectedUser: "",
     payment: false
   },
@@ -106,14 +108,15 @@ var app = new Vue({
     async payPanier() {
       try {
         await axios.post('api/panier/pay')
-        this.loginError = false
+        this.paiementError = false
         this.payment = true
 
         setInterval(() => {
           location.href = "/#/"
+          location.reload()
         }, 3000);
       } catch (error) {
-        this.loginError = true
+        this.paiementError = true
       }
     }
 

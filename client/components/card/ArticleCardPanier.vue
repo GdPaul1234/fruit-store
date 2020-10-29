@@ -14,7 +14,7 @@
             x{{ item.quantity }} : {{ item.quantity * item.price }} €
             <span class="button-container">
               <button @click="modifyPanierQuantity(item.id, item.quantity)">
-                Modifier quantité
+                ✏️
               </button>
               <button @click="removeFromPanier(item.id)">🗑️</button>
             </span>
@@ -23,7 +23,12 @@
         <!--Edit on : modifier la quantité du produit -->
         <div v-else>
           <div class="button-container">
-            <input v-model="editingArticle.quantity" type="number" min="1" max="999"/>
+            <input
+              v-model="editingArticle.quantity"
+              type="number"
+              min="1"
+              max="99"
+            />
             <span class="price"
               >: {{ editingArticle.quantity * item.price }} €</span
             >
@@ -49,15 +54,15 @@ module.exports = {
         id: -1,
         quantity: 0,
       },
-      articlesDetail: []
+      articlesDetail: [],
     };
   },
-  watch : {
+  watch: {
     panier: {
       immediate: true,
       deep: true,
-      handler: 'getArticleDetail'
-    }
+      handler: "getArticleDetail",
+    },
   },
   methods: {
     // Obtenir détail article
@@ -68,17 +73,17 @@ module.exports = {
       for (const item of articlesPanier) {
         let articleDetail = this.articles.find((a) => a.id === item.id);
         let article = {
-          id : item.id,
+          id: item.id,
           image: articleDetail.image,
           name: articleDetail.name,
           description: articleDetail.description,
           price: articleDetail.price,
           quantity: item.quantity,
         };
-         this.articlesDetail.push(article);
+        this.articlesDetail.push(article);
 
-         // mettre à jour détail panier au composant parent
-         this.$emit('get-panier-price', this.articlesDetail)
+        // mettre à jour détail panier au composant parent
+        this.$emit("get-panier-price", this.articlesDetail);
       }
     },
 
@@ -89,8 +94,8 @@ module.exports = {
 
     // Met l'article en mode édition
     modifyPanierQuantity(articleId, articleQuantity) {
-      this.editingArticle['id'] =  articleId;
-      this.editingArticle['quantity'] = articleQuantity;
+      this.editingArticle["id"] = articleId;
+      this.editingArticle["quantity"] = articleQuantity;
     },
     // Envoie la modification au serveur
     sendModifyPanierQuantity() {
@@ -110,7 +115,7 @@ module.exports = {
 
 <style scoped>
 .article-container {
-  grid-template-columns: repeat(auto-fill, 375px);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 article {
