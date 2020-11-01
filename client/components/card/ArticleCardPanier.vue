@@ -57,29 +57,54 @@ module.exports = {
       articlesDetail: [],
     };
   },
+  /* https://stackoverflow.com/a/57864145 */
+  computed: {
+    changeData() {
+      const { articles, panier } = this
+      return {
+        articles,
+        panier
+      }
+    }
+  },
   watch: {
-    panier: {
+    changeData: {
       immediate: true,
       deep: true,
       handler: "getArticleDetail",
     },
   },
   methods: {
-    // Obtenir détail article
-    getArticleDetail(panier) {
+    // Obtenir détail article (update si articles ou panier change)
+    getArticleDetail(data) {
+      var articles = data.articles;
+      var panier = data.panier;
+
       var articlesPanier = panier.articles;
       this.articlesDetail = [];
 
       for (const item of articlesPanier) {
-        let articleDetail = this.articles.find((a) => a.id === item.id);
+        let articleDetail = articles.find((a) => a.id === item.id);
         let article = {
           id: item.id,
-          image: articleDetail.image,
-          name: articleDetail.name,
-          description: articleDetail.description,
-          price: articleDetail.price,
+          image:
+            "https://icons.iconarchive.com/icons/custom-icon-design/flatastic-4/256/Package-warning-icon.png",
+          description: "Cet article n'est plus en vente",
+          name: "Article indisponible",
+          price: 0,
           quantity: item.quantity,
         };
+        if (typeof articleDetail !== "undefined") {
+          article = {
+            id: item.id,
+            image: articleDetail.image,
+            name: articleDetail.name,
+            description: articleDetail.description,
+            price: articleDetail.price,
+            quantity: item.quantity,
+          };
+        }
+
         this.articlesDetail.push(article);
 
         // mettre à jour détail panier au composant parent
