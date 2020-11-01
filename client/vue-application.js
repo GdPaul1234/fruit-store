@@ -2,12 +2,14 @@ const Home = window.httpVueLoader('./components/Home.vue')
 const Register = window.httpVueLoader('./components/Register.vue')
 const Login = window.httpVueLoader('./components/Login.vue')
 const Panier = window.httpVueLoader('./components/Panier.vue')
+const ArticleEdit = window.httpVueLoader('./components/admin/ArticleEdit.vue')
 
 const routes = [
   { path: '/', component: Home },
   { path: '/register', component: Register },
   { path: '/login', component: Login },
-  { path: '/panier', component: Panier }
+  { path: '/panier', component: Panier },
+  { path: '/edit', component: ArticleEdit }
 ]
 
 const router = new VueRouter({
@@ -53,6 +55,12 @@ var app = new Vue({
     }
   },
   methods: {
+    /*
+    ===============================================================
+    GESTION CLIENTS
+    ===============================================================
+    */
+
     // Gestion register
     async registerUser(newUser) {
       try {
@@ -83,6 +91,12 @@ var app = new Vue({
       this.loginError = false
       this.connectedUser = user.email
     },
+
+    /*
+    ===============================================================
+    GESTION PANIER
+    ===============================================================
+    */
 
     // Effectuer la requête à l’API POST /api/panier afin d’ajouter l’article au panier
     async addToPanier(articleId) {
@@ -118,7 +132,29 @@ var app = new Vue({
       } catch (error) {
         this.paiementError = true
       }
-    }
+    },
+
+    /*
+    ===============================================================
+    GESTION ARTICLES
+    ===============================================================
+    */
+    async updateArticle (newArticle) {
+      await axios.put('/api/article/' + newArticle.id, newArticle)
+      const article = this.articles.find(a => a.id === newArticle.id)
+      article.name = newArticle.name
+      article.description = newArticle.description
+      article.image = newArticle.image
+      article.price = newArticle.price
+    },
+
+    async deleteArticle (articleId) {
+      await axios.delete('/api/article/' + articleId)
+      const index = this.articles.findIndex(a => a.id === articleId)
+      this.articles.splice(index, 1)
+    },
+
+
 
   }
 })
