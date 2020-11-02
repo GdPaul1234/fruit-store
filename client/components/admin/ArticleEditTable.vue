@@ -1,12 +1,19 @@
 <template>
   <div class="table-container">
-      <article-edit-dialog
+    <article-edit-dialog
       v-if="editingArticle.id !== -1"
-        :edit-article-data="editingArticle"
-        @send-edit-article="sendEditArticle"
-        @abort-edit-article="abortEditArticle"
-      ></article-edit-dialog>
+      :edit-article-data="editingArticle"
+      @send-edit-article="sendEditArticle"
+      @abort-edit-article="abortEditArticle"
+    ></article-edit-dialog>
     <table :class="classTable">
+      <colgroup>
+        <col style="width: 100px" />
+        <col style="width: 30%" />
+        <col style="width: 80px" />
+        <col style="width: 70%" />
+        <col style="width: 50px" />
+      </colgroup>
       <thead>
         <tr>
           <th></th>
@@ -17,7 +24,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="article in articles" :key="article.id">
+        <tr v-for="article in searchArticles" :key="article.id">
           <td><img :src="article.image" /></td>
           <td scope="row">{{ article.name }}</td>
           <td class="price">{{ article.price }} €</td>
@@ -41,6 +48,7 @@ module.exports = {
   components: { ArticleEditDialog },
   props: {
     articles: { type: Array, default: [] },
+    searchQuery: { type: String, default: "" },
   },
   data() {
     return {
@@ -53,6 +61,26 @@ module.exports = {
         price: 0,
       },
     };
+  },
+  computed: {
+    searchArticles() {
+      var result = [];
+      if (this.searchQuery !== "") {
+        for (let index = 0; index < this.articles.length; index++) {
+          const element = this.articles[index];
+          const articleName = element.name.toLowerCase();
+          const articleDesc = element.description.toLowerCase();
+          const search = this.searchQuery.toLowerCase();
+          if (articleName.includes(search) || articleDesc.includes(search)) {
+            result.push(element);
+          }
+        }
+      } else {
+        result = this.articles;
+      }
+
+      return result;
+    },
   },
   mounted() {
     // Déterminer si on est sur un petit écran (max-width: 600px)
@@ -107,6 +135,8 @@ module.exports = {
 .articles-table {
   width: 100%;
   border-collapse: collapse;
+
+  table-layout: fixed;
 }
 /* Zebra striping */
 .articles-table tr:nth-of-type(odd),

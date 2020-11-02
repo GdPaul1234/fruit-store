@@ -63,7 +63,7 @@ module.exports = {
 };
 </script>
 
-<style scoped>
+<style >
 /* d'après https://vuejs.org/v2/examples/modal.html */
 .modal-mask {
   position: fixed;
@@ -74,6 +74,10 @@ module.exports = {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: table;
+}
+
+body {
+  height: 100vh;
 }
 
 /* Centrage de la boîte de dialogue */

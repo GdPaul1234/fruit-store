@@ -1,13 +1,26 @@
 <template>
   <div>
     <h2>Gestion des articles</h2>
-    <article-new-dialog v-if="showAddArticle"
-     @send-new-article="sendNewArticle"
-     @abort-new-article="abortNewArticle"
+    <article-new-dialog
+      v-if="showAddArticle"
+      @send-new-article="sendNewArticle"
+      @abort-new-article="abortNewArticle"
     ></article-new-dialog>
 
-    <article-edit-table style="margin-bottom: 80px"
+    <div class="search">
+      <span>Rechercher</span>
+      <input
+        type="search"
+        id="query"
+        v-model="searchQuery"
+        placeholder=" banane, pomme, poire..."
+      />
+    </div>
+
+    <article-edit-table
+      style="margin-bottom: 80px"
       :articles="articles"
+      :search-query="searchQuery"
       @delete-edit-article="deleteEditArticle"
       @update-edit-article="updateEditArticle"
     ></article-edit-table>
@@ -20,7 +33,9 @@
 const ArticleEditTable = window.httpVueLoader(
   "./components/admin/ArticleEditTable.vue"
 );
-const ArticleNewDialog = window.httpVueLoader("./components/admin/ArticleNewDialog.vue");
+const ArticleNewDialog = window.httpVueLoader(
+  "./components/admin/ArticleNewDialog.vue"
+);
 
 module.exports = {
   components: { ArticleEditTable, ArticleNewDialog },
@@ -30,6 +45,7 @@ module.exports = {
   data() {
     return {
       showAddArticle: false,
+      searchQuery: "",
     };
   },
   methods: {
@@ -63,6 +79,7 @@ h2 {
   text-align: center;
 }
 
+/* BUTTON FLOTANT ajout article ========================= */
 .add-article {
   position: fixed;
   bottom: 1em;
@@ -78,7 +95,7 @@ h2 {
   padding: 10.5px 21px;
   border-radius: 15px;
   box-shadow: rgba(0, 0, 0, 1) 0 1px 0;
-  text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0;
+  text-shadow: rgba(70, 66, 66, 0.4) 0 1px 0;
   font-size: 18px;
 }
 .add-article:hover {
@@ -91,4 +108,29 @@ h2 {
   background: #275c1b;
 }
 
+/* CHAMP DE RECHERCHE ====================================== */
+.search {
+  padding: 0.5em;
+  margin: 0 1em;
+  margin-bottom: 1em;
+
+  border-radius: 2em;
+  background-color: white;
+  filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
+
+  display: flex;
+  position: sticky;
+  top: 90px;
+  z-index: 99;
+}
+
+.search * {
+  padding: 0.5em;
+}
+
+.search #query {
+  width: 100%;
+  min-width: 75px;
+  border-radius: 2em;
+}
 </style>
