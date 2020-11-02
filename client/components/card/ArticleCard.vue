@@ -69,8 +69,9 @@ article .price {
 }
 
 img {
-  width: 100%;
-  height: auto;
+  width: 216.25px;
+  height: 216.25px;
+  object-fit: contain;
 }
 
 .button-container {

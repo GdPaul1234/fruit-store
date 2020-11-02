@@ -2,13 +2,13 @@
   <div class="modal-mask">
     <div class="modal-wrapper">
       <div class="modal-container">
-        <div class="modal-header"><h3>Edition article</h3></div>
+        <div class="modal-header"><h3>Nouvel article</h3></div>
         <div class="modal-body">
-          <form id="article-edit" class="login" @submit.prevent="sendEditArticleData">
+          <form id="article-edit" class="login" @submit.prevent="sendNewArticle">
             <label for="image">URL image</label>
             <input
               type="text"
-              v-model="editArticleData.image"
+              v-model="newArticleData.image"
               placeholder="http://example.com/image.jpg"
               required
             />
@@ -16,17 +16,17 @@
             <label for="name">nom</label>
             <input
               type="text"
-              v-model="editArticleData.name"
+              v-model="newArticleData.name"
               placeholder="Banane"
               required
             />
 
             <label for="price">prix (€)</label>
-            <input type="number" v-model="editArticleData.price" required />
+            <input type="number" v-model="newArticleData.price" required />
 
             <label for="description">description</label>
             <textarea
-              v-model="editArticleData.description"
+              v-model="newArticleData.description"
               cols="30"
               rows="5"
               placeholder="La description du produit"
@@ -35,7 +35,7 @@
 
             <div class="button">
               <button type="submit">✔️</button>
-              <button @click="cancelEditArticle">❌</button>
+              <button @click="cancelNewArticle">❌</button>
             </div>
           </form>
         </div>
@@ -46,18 +46,23 @@
 
 <script>
 module.exports = {
-  props: {
-    editArticleData: { type: Object },
-  },
+  props: {},
   data() {
-    return {};
+    return {
+      newArticleData: {
+        name: "",
+        description: "",
+        image: "",
+        price: 0,
+      },
+    };
   },
   methods: {
-    sendEditArticleData() {
-      this.$emit("send-edit-article");
+    sendNewArticle() {
+      this.$emit("send-new-article", this.newArticleData);
     },
-    cancelEditArticle() {
-      this.$emit("abort-edit-article");
+    cancelNewArticle() {
+      this.$emit("abort-new-article");
     },
   },
 };

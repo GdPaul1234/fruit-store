@@ -1,11 +1,18 @@
 <template>
   <div>
     <h2>Gestion des articles</h2>
-    <article-edit-table
+    <article-new-dialog v-if="showAddArticle"
+     @send-new-article="sendNewArticle"
+     @abort-new-article="abortNewArticle"
+    ></article-new-dialog>
+
+    <article-edit-table style="margin-bottom: 80px"
       :articles="articles"
       @delete-edit-article="deleteEditArticle"
       @update-edit-article="updateEditArticle"
     ></article-edit-table>
+
+    <button class="add-article" @click="addNewArticle()">➕ Ajouter</button>
   </div>
 </template>
 
@@ -13,16 +20,37 @@
 const ArticleEditTable = window.httpVueLoader(
   "./components/admin/ArticleEditTable.vue"
 );
+const ArticleNewDialog = window.httpVueLoader("./components/admin/ArticleNewDialog.vue");
 
 module.exports = {
-  components: { ArticleEditTable },
+  components: { ArticleEditTable, ArticleNewDialog },
   props: {
     articles: { type: Array, default: [] },
   },
+  data() {
+    return {
+      showAddArticle: false,
+    };
+  },
   methods: {
+    // Ajouter article
+    sendNewArticle(newArticle) {
+      this.$emit("add-article", newArticle);
+      this.showAddArticle = false;
+    },
+    addNewArticle() {
+      this.showAddArticle = true;
+    },
+    abortNewArticle() {
+      this.showAddArticle = false;
+    },
+
+    // Supprimer article
     deleteEditArticle(articleId) {
       this.$emit("delete-article", articleId);
     },
+
+    // Modifier article
     updateEditArticle(editingArticle) {
       this.$emit("update-article", editingArticle);
     },
@@ -34,4 +62,33 @@ module.exports = {
 h2 {
   text-align: center;
 }
+
+.add-article {
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
+  padding: 10px;
+  border-radius: 1em;
+}
+
+.add-article {
+  border-top: 1px solid #97f7cc;
+  background: #65d690;
+  background: linear-gradient(top, #3e9c40, #65d690);
+  padding: 10.5px 21px;
+  border-radius: 15px;
+  box-shadow: rgba(0, 0, 0, 1) 0 1px 0;
+  text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0;
+  font-size: 18px;
+}
+.add-article:hover {
+  border-top-color: #28783d;
+  background: #28783d;
+  color: #ccc;
+}
+.add-article:active {
+  border-top-color: #275c1b;
+  background: #275c1b;
+}
+
 </style>

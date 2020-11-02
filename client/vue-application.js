@@ -139,6 +139,11 @@ var app = new Vue({
     GESTION ARTICLES
     ===============================================================
     */
+   async addArticle (article) {
+    const res = await axios.post('/api/article', article)
+    this.articles.push(res.data)
+  },
+
     async updateArticle (newArticle) {
       await axios.put('/api/article/' + newArticle.id, newArticle)
       const article = this.articles.find(a => a.id === newArticle.id)
@@ -153,8 +158,6 @@ var app = new Vue({
       const index = this.articles.findIndex(a => a.id === articleId)
       this.articles.splice(index, 1)
     },
-
-
 
   }
 })

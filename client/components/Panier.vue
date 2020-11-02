@@ -229,8 +229,6 @@ h3 {
   text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0;
   color: white;
   font-size: 18px;
-  text-decoration: none;
-  vertical-align: middle;
 }
 .pay-button:hover {
   border-top-color: #28783d;
