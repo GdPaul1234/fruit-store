@@ -4,10 +4,10 @@
       <img :src="article.image" />
 
       <div>
-        <div class="title">
+        <a class="title" :href="`/#/p/${article.id}`">
           <strong>{{ article.name }}</strong>
           {{ article.description }}
-        </div>
+        </a>
 
         <div class="price">
           {{ article.price }} €
@@ -54,6 +54,7 @@ module.exports = {
 </script>
 
 <style scoped>
+
 article .title {
   height: 52.8px;
   overflow: hidden;
@@ -61,6 +62,14 @@ article .title {
   font-size: 14px;
   margin-bottom: 1rem;
   line-height: 18px;
+
+  display: block;
+  text-decoration: none;
+  color: black;
+}
+
+article .title:hover {
+  text-decoration: underline;
 }
 
 article .price {

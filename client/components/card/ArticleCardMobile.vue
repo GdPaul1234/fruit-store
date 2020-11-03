@@ -1,12 +1,12 @@
 <template>
   <div class="article-container">
     <article v-for="article in articles" :key="article.id">
-      <img :src="article.image" />
+      <img class="image" :src="article.image" />
       <div class="content">
-        <div class="title">
+        <a class="title" :href="`/#/p/${article.id}`">
           <strong>{{ article.name }}</strong>
           {{ article.description }}
-        </div>
+        </a>
 
         <div class="price">
           {{ article.price }} €
@@ -16,11 +16,19 @@
               @click="removeFromPanier(article.id)"
               v-if="panier.articles.some((a) => a.id === article.id)"
             >
-              Retirer du panier
+              <img
+                src="https://icons.iconarchive.com/icons/custom-icon-design/flatastic-4/16/Shopping-cart-remove-icon.png"
+                alt="Shopping cart add Icon"
+              />
+              Retirer
             </button>
             <!-- ... sinon, bouton HTML “ajouter au panier”, à droite de chaque article -->
             <button @click="addToPanier(article.id)" v-else>
-              Ajouter au panier
+              <img
+                src="https://icons.iconarchive.com/icons/custom-icon-design/flatastic-4/16/Shopping-cart-insert-icon.png"
+                alt="Shopping cart remove Icon"
+              />
+              Ajouter
             </button>
           </span>
         </div>
@@ -68,6 +76,14 @@ article .title {
   font-size: 14px;
   margin-bottom: 10px;
   line-height: 18px;
+
+  display: block;
+  text-decoration: none;
+  color: black;
+}
+
+article .title:hover {
+  text-decoration: underline;
 }
 
 article .price {
@@ -75,7 +91,7 @@ article .price {
   font-weight: 700;
 }
 
-img {
+.image {
   width: 80px;
   height: auto;
   margin-right: 10px;
