@@ -1,0 +1,25 @@
+/* CHAMP DE RECHERCHE ====================================== */
+.search {
+    padding: 0.5em;
+    margin: 0 1em;
+    margin-bottom: 1em;
+  
+    border-radius: 2em;
+    background-color: white;
+    filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
+  
+    display: flex;
+    position: sticky;
+    top: 90px;
+    z-index: 99;
+  }
+  
+  .search * {
+    padding: 0.5em;
+  }
+  
+  .search #query {
+    width: 100%;
+    min-width: 75px;
+    border-radius: 2em;
+  }

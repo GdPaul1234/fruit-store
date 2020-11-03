@@ -1,8 +1,17 @@
 <template>
   <div>
-    <p>bla bla bla</p>
+    <div class="search">
+      <span>Rechercher</span>
+      <input
+        type="search"
+        id="query"
+        v-model="searchQuery"
+        placeholder=" banane, pomme, poire..."
+      />
+    </div>
+
     <component :is="articleComponent"
-     :articles="articles" :panier="panier"
+     :articles="searchArticles" :panier="panier"
      @add-to-home-panier="addToHomePanier"
      @remove-from-home-panier="removeFromHomePanier" >
     </component>
@@ -24,8 +33,29 @@ module.exports = {
   },
   data() {
     return {
-      articleComponent: 'ArticleCard'
+      articleComponent: 'ArticleCard',
+      searchQuery: ''
     };
+  },
+  computed: {
+    searchArticles() {
+      var result = [];
+      if (this.searchQuery !== "") {
+        for (let index = 0; index < this.articles.length; index++) {
+          const element = this.articles[index];
+          const articleName = element.name.toLowerCase();
+          const articleDesc = element.description.toLowerCase();
+          const search = this.searchQuery.toLowerCase();
+          if (articleName.includes(search) || articleDesc.includes(search)) {
+            result.push(element);
+          }
+        }
+      } else {
+        result = this.articles;
+      }
+
+      return result;
+    },
   },
   mounted () {
     // Déterminer si on est sur un petit écran (max-width: 530px)

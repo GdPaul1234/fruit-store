@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fruit Store - les meilleurs fruits frais</title>
     <!-- Load Vue followed by Vue Router -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -10,57 +10,53 @@
     <script src="https://cdn.jsdelivr.net/npm/vue-router/dist/vue-router.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- Load stylesheet -->
-    <link rel="stylesheet" href="styles/style.css">
-    <link rel="stylesheet" href="styles/form.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/form.css" />
+    <link rel="stylesheet" href="styles/search.css" />
+  </head>
+  <body>
     <div class="bg-image"></div>
 
     <div id="app">
-        <header>
-            <h1>Fruit Store</h1>
-            <!-- Navigation bar -->
-            <nav>
-                <router-link to="/">Accueil</router-link>
-                <router-link to="/panier">Panier</router-link>
-  
-                <div v-if="connectedUser === ''" style="padding-left: 0;">
-                  <router-link to="/register">S'inscrire</router-link>
-                  <router-link to="/login">Se connecter</router-link>
-                </div>
-                <div v-else>
-                  {{ connectedUser }}
-                </div>
-            </nav>
-        </header>
+      <header>
+        <h1>Fruit Store</h1>
+        <!-- Navigation bar -->
+        <nav>
+          <router-link to="/">Accueil</router-link>
+          <router-link to="/panier">Panier</router-link>
 
-        <main>
-            <router-view
-            :articles="articles"
-            :panier="panier"
-            @add-article="addArticle"
-            @delete-article="deleteArticle"
-            @update-article="updateArticle"
+          <div v-if="connectedUser === ''" style="padding-left: 0">
+            <router-link to="/register">S'inscrire</router-link>
+            <router-link to="/login">Se connecter</router-link>
+          </div>
+          <div v-else>{{ connectedUser }}</div>
+        </nav>
+      </header>
 
-            :payment="payment"
-            :perror="paiementError"
-            @add-to-panier="addToPanier"
-            @remove-from-panier="removeFromPanier"
-            @modify-article-panier="modifyArticlePanier"
-            @pay-panier="payPanier"
-
-            :rsuccess="registerSuccess"
-            :rerror="registerError"
-            :rerror_reason="registerErrorReason"
-            @register-user="registerUser"
-
-            :lsuccess="loginSuccess"
-            :lerror="loginError"
-            :lerror_reason="loginErrorReason"
-            @login-user="loginUser"
-          ></router-view>
-        </main>
+      <main>
+        <router-view
+          :articles="articles"
+          :panier="panier"
+          @add-article="addArticle"
+          @delete-article="deleteArticle"
+          @update-article="updateArticle"
+          :payment="payment"
+          :perror="paiementError"
+          @add-to-panier="addToPanier"
+          @remove-from-panier="removeFromPanier"
+          @modify-article-panier="modifyArticlePanier"
+          @pay-panier="payPanier"
+          :rsuccess="registerSuccess"
+          :rerror="registerError"
+          :rerror_reason="registerErrorReason"
+          @register-user="registerUser"
+          :lsuccess="loginSuccess"
+          :lerror="loginError"
+          :lerror_reason="loginErrorReason"
+          @login-user="loginUser"
+        ></router-view>
+      </main>
     </div>
     <script src="/vue-application.js"></script>
-</body>
+  </body>
 </html>
