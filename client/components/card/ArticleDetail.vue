@@ -1,9 +1,12 @@
 <template>
-  <div class="container">
-    <div class="left-wrapper">
+  <div :class="[isMobile ? 'mobile-container' : 'container']">
+    <!-- Image produit -->
+    <div :class="[isMobile ? 'top-wrapper' : 'left-wrapper']">
       <img :src="article.image" />
     </div>
-    <div class="right-wrapper">
+
+    <!-- Description produit -->
+    <div :class="[isMobile ? 'bottom-wrapper' : 'right-wrapper']">
       <article>
         <div class="title">
           <button @click="goToPreviousPage()">◀</button>
@@ -44,6 +47,7 @@ module.exports = {
   data() {
     return {
       article: {},
+      isMobile: false,
     };
   },
   /* https://stackoverflow.com/a/57864145 */
@@ -63,6 +67,15 @@ module.exports = {
       deep: true,
       handler: "getArticleDetail",
     },
+  },
+  mounted() {
+    // Déterminer si on est sur un petit écran (max-width: 530px)
+    this.isMobile = screen.width < 530;
+
+    // articleComponent se met à jour à chaque redimensionnement de l'écran
+    window.addEventListener("resize", () => {
+      this.isMobile = screen.width < 530;
+    });
   },
   methods: {
     // Obtenir détail article (update si articles ou panier change)
@@ -111,6 +124,23 @@ module.exports = {
   margin: 0 1rem;
 }
 
+.mobile-container {
+  display: block;
+}
+
+.top-wrapper {
+  position: sticky;
+  top: 90px;
+  z-index: 0;
+  margin-bottom: 0.5rem;
+}
+
+.bottom-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
 .left-wrapper {
   grid-column: 1 / 2;
   width: 100%;
@@ -126,41 +156,45 @@ module.exports = {
   margin: 0 auto;
 }
 
+.top-wrapper img {
+  width: 100%;
+  height: auto;
+  z-index: 0;
+}
+
 .right-wrapper {
   grid-column: 2 / 3;
 }
 
-.right-wrapper article {
+/* DESCRIPTION ======================================= */
+
+div[class$="-wrapper"] article {
   border: 1px solid #ccc;
   border-radius: 1em;
-  background-image: radial-gradient(
-    circle farthest-corner at 10% 20%,
-    rgba(234, 249, 249, 0.67) 0.1%,
-    rgba(239, 249, 251, 0.63) 90.1%
-  );
+  background-color: rgba(249, 249, 249, 0.9);
 
   padding: 1.245rem 1rem;
 }
 
-.right-wrapper .title > h2 {
+div[class$="-wrapper"] .title > h2 {
   display: inline;
   margin-top: 0;
   margin-bottom: 0;
   vertical-align: middle;
 }
 
-.right-wrapper .title > button {
+div[class$="-wrapper"] .title > button {
   height: 26.4px;
   border-radius: 100%;
   vertical-align: middle;
 }
 
-.right-wrapper article > h3 {
+div[class$="-wrapper"] article > h3 {
   border-bottom: black dotted;
   margin-bottom: 0.5em;
 }
 
-/* BUTTON */
+/* BUTTON ========================================== */
 .button-container {
   margin-top: 1.17rem;
 }
