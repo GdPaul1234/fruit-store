@@ -1,31 +1,48 @@
 <template>
   <div>
-    <h2>Gestion des articles</h2>
-    <article-new-dialog
-      v-if="showAddArticle"
-      @send-new-article="sendNewArticle"
-      @abort-new-article="abortNewArticle"
-    ></article-new-dialog>
+    <!-- Afficher la gestion des articles si l'user est un admin -->
+    <div v-if="isAdmin">
+      <h2>Gestion des articles</h2>
+      <article-new-dialog
+        v-if="showAddArticle"
+        @send-new-article="sendNewArticle"
+        @abort-new-article="abortNewArticle"
+      ></article-new-dialog>
 
-    <div class="search">
-      <span>Rechercher</span>
-      <input
-        type="search"
-        id="query"
-        v-model="searchQuery"
-        placeholder=" banane, pomme, poire..."
-      />
+      <div class="search">
+        <span>Rechercher</span>
+        <input
+          type="search"
+          id="query"
+          v-model="searchQuery"
+          placeholder=" banane, pomme, poire..."
+        />
+      </div>
+
+      <article-edit-table
+        style="margin-bottom: 80px"
+        :articles="articles"
+        :search-query="searchQuery"
+        @delete-edit-article="deleteEditArticle"
+        @update-edit-article="updateEditArticle"
+      ></article-edit-table>
+
+      <button class="add-article" @click="addNewArticle()">➕ Ajouter</button>
     </div>
 
-    <article-edit-table
-      style="margin-bottom: 80px"
-      :articles="articles"
-      :search-query="searchQuery"
-      @delete-edit-article="deleteEditArticle"
-      @update-edit-article="updateEditArticle"
-    ></article-edit-table>
-
-    <button class="add-article" @click="addNewArticle()">➕ Ajouter</button>
+    <!-- Panier vide -->
+    <div class="panier-vide" v-else>
+      <img
+        src="https://icons.iconarchive.com/icons/custom-icon-design/flatastic-5/256/Couple-icon.png"
+        alt="couple"
+      />
+      <div class="content">
+        <p>
+          Vous êtes perdu !<br />
+          <a href="/#/">Revenir à l'accueil</a>
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -41,6 +58,7 @@ module.exports = {
   components: { ArticleEditTable, ArticleNewDialog },
   props: {
     articles: { type: Array, default: [] },
+    isAdmin: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -106,5 +124,33 @@ h2 {
 .add-article:active {
   border-top-color: #275c1b;
   background: #275c1b;
+}
+
+/* PANIER VIDE ======================================== */
+.panier-vide {
+  margin: 0 auto 20px auto;
+  padding: 1rem;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 1em;
+  background-image: radial-gradient(
+    circle farthest-corner at 10% 20%,
+    rgba(234, 249, 249, 0.67) 0.1%,
+    rgba(239, 249, 251, 0.63) 90.1%
+  );
+  display: flex;
+  align-items: center;
+}
+
+.panier-vide img {
+  height: 100%;
+  max-height: 72px;
+  width: auto;
+  padding-right: 0.5em;
+}
+
+.panier-vide .content {
+  border-left: 1px solid darkgray;
+  padding-left: 0.5em;
 }
 </style>

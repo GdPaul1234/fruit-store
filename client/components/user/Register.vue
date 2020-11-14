@@ -1,34 +1,30 @@
 <template>
   <div>
-    <h2>Connexion</h2>
-
+    <h2>Inscription</h2>
     <!-- Gestion des erreurs -->
-    <div class="error" v-if="lerror">
-      {{ lerror_reason }} <br />
-      <a href="/#/register">Créer un nouveau compte</a>
+    <div class="error" v-if="rerror">{{ rerror_reason }}</div>
+    <div class="success" v-if="rsuccess">
+      Utilisateur enregistré avec succès ! <a href="/#/login">Se connecter</a>
     </div>
-    <div class="success" v-if="lsuccess">Connexion réussie !</div>
 
-    <!-- Formulaire de connexion -->
-    <form class="login" @submit.prevent="loginUser">
+    <!-- Formulaire d'inscription -->
+    <form class="login" @submit.prevent="registerUser">
       <label for="email">e-mail</label>
       <input
         type="email"
-        v-model="user.email"
+        v-model="newUser.email"
         placeholder="jonh.doe@example.com"
         required
       />
-
       <label for="password">mot de passe</label>
       <input
         type="password"
-        v-model="user.password"
+        v-model="newUser.password"
         placeholder="********"
         required
       />
-
       <div class="button">
-        <button type="submit">Se connecter</button>
+        <button type="submit">S'inscrire</button>
       </div>
     </form>
   </div>
@@ -37,21 +33,21 @@
 <script>
 module.exports = {
   props: {
-    lsuccess: { type: Boolean, default: false },
-    lerror: { type: Boolean, default: false },
-    lerror_reason: { type: String },
+    rsuccess: { type: Boolean, default: false },
+    rerror: { type: Boolean, default: false },
+    rerror_reason: { type: String },
   },
   data() {
     return {
-      user: {
+      newUser: {
         email: "",
         password: "",
       },
     };
   },
   methods: {
-    loginUser() {
-      this.$emit("login-user", this.user);
+    registerUser() {
+      this.$emit("register-user", this.newUser);
     },
   },
 };

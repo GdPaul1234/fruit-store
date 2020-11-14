@@ -22,9 +22,16 @@
         <h1>Fruit Store</h1>
         <!-- Navigation bar -->
         <nav>
-          <router-link to="/">Accueil</router-link>
-          <router-link to="/panier">Panier</router-link>
-
+          <!-- Afficher les routes destinées aux clients -->
+          <div v-if="!isAdmin" style="padding-right: 0">
+            <router-link to="/">Accueil</router-link>
+            <router-link to="/panier">Panier</router-link>
+          </div>
+          <!-- Afficher les routes destinées au admin -->
+          <div v-else style="padding-right: 0">
+            <router-link to="/edit">Edit Articles</router-link>
+          </div>
+          <!-- Liens vers les routes users -->
           <div v-if="connectedUser === ''" style="padding-left: 0">
             <router-link to="/register">S'inscrire</router-link>
             <router-link to="/login">Se connecter</router-link>
@@ -54,6 +61,7 @@
           :lerror="loginError"
           :lerror_reason="loginErrorReason"
           @login-user="loginUser"
+          :is-admin="isAdmin"
         ></router-view>
       </main>
     </div>

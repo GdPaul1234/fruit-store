@@ -15,6 +15,21 @@
 
         <h3>Prix</h3>
         <div class="price">{{ article.price }} €</div>
+
+        <div class="button-container">
+          <!-- Afficher le bouton "Retirer du panier" si l'article est déja dedans... -->
+          <button
+            @click="removeFromPanier(article.id)"
+            v-if="panier.articles.some((a) => a.id === article.id)"
+            class="red"
+          >
+            Retirer du panier
+          </button>
+          <!-- ... sinon, bouton HTML “ajouter au panier”, à droite de chaque article -->
+          <button @click="addToPanier(article.id)" v-else class="green">
+            Ajouter au panier
+          </button>
+        </div>
       </article>
     </div>
   </div>
@@ -72,6 +87,16 @@ module.exports = {
     goToPreviousPage() {
       window.history.back();
     },
+
+    // déclenche l’événement add-to-panier en transmettant l’id de l’article
+    addToPanier(articleId) {
+      this.$emit("add-to-panier", articleId);
+    },
+
+    // déclenche l’événement remove-from-panier en transmettant l’id de l’article
+    removeFromPanier(articleId) {
+      this.$emit("remove-from-panier", articleId);
+    },
   },
 };
 </script>
@@ -94,6 +119,7 @@ module.exports = {
 .left-wrapper img {
   height: 100%;
   max-height: 75vh;
+  max-width: 65vw;
   width: auto;
 
   display: block;
@@ -132,5 +158,49 @@ module.exports = {
 .right-wrapper article > h3 {
   border-bottom: black dotted;
   margin-bottom: 0.5em;
+}
+
+/* BUTTON */
+.button-container {
+  margin-top: 1.17rem;
+}
+
+.button-container button {
+  padding: 10.5px 21px;
+  border-radius: 15px;
+  box-shadow: rgba(0, 0, 0, 1) 0 1px 0;
+  text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0;
+  color: white;
+  font-size: 18px;
+}
+.button-container .green {
+  border-top: 1px solid #97f7cc;
+  background: #65d690;
+  background: linear-gradient(top, #3e9c40, #65d690);
+}
+.button-container .red {
+  border-top: 1px solid #f79797;
+  background: #d66565;
+  background: linear-gradient(top, #9c3e3e, #d66565);
+}
+
+.button-container button.green:hover {
+  border-top-color: #28783d;
+  background: #28783d;
+  color: #ccc;
+}
+.button-container button.red:hover {
+  border-top-color: #782828;
+  background: #782828;
+  color: #ccc;
+}
+
+.button-container button.green:active {
+  border-top-color: #275c1b;
+  background: #275c1b;
+}
+.button-container button.red:active {
+  border-top-color: #5c1b1b;
+  background: #5c1b1b;
 }
 </style>

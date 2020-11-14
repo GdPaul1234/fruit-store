@@ -1,6 +1,6 @@
 const Home = window.httpVueLoader('./components/Home.vue')
-const Register = window.httpVueLoader('./components/Register.vue')
-const Login = window.httpVueLoader('./components/Login.vue')
+const Register = window.httpVueLoader('./components/user/Register.vue')
+const Login = window.httpVueLoader('./components/user/Login.vue')
 const Panier = window.httpVueLoader('./components/Panier.vue')
 const ArticleEdit = window.httpVueLoader('./components/admin/ArticleEdit.vue')
 const ArticleDetail = window.httpVueLoader('./components/card/ArticleDetail.vue')
@@ -40,6 +40,7 @@ var app = new Vue({
     paiementError: false,
 
     connectedUser: "",
+    isAdmin: false,
     payment: false
   },
   async mounted() {
