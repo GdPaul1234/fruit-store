@@ -22,7 +22,7 @@
             />
 
             <label for="price">prix (€)</label>
-            <input type="number" v-model="editArticleData.price" required />
+            <input type="number" step="0.01" v-model="editArticleData.price" required />
 
             <label for="description">description</label>
             <textarea

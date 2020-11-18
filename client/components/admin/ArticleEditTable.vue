@@ -25,7 +25,7 @@
       </thead>
       <tbody>
         <tr v-for="article in searchArticles" :key="article.id">
-          <td><img :src="article.image" /></td>
+          <td> {{ article.id }} <img :src="article.image" /></td>
           <td scope="row">{{ article.name }}</td>
           <td class="price">{{ article.price }} €</td>
           <td>{{ article.description }}</td>
