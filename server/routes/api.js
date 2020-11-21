@@ -57,8 +57,42 @@ router.use(async (req, res, next) => {
 /*
  * Cette route doit retourner le panier de l'utilisateur, grâce à req.session
  */
-router.get("/panier", (req, res) => {
-  res.json(req.session.panier);
+router.get("/panier", async (req, res) => {
+  const id = req.session.userId;
+
+  // Si l’utilisateur n’est pas connecté, retourner le panier du cookie
+  if (typeof id === "undefined") {
+    res.json(req.session.panier);
+  } else {
+    // Sinon, renvoyer le panier sql
+    sql = "SELECT panier FROM users WHERE id=$1";
+    const result = await client.query({
+      text: sql,
+      values: [id],
+    });
+    console.log(result.rows[0].panier)
+
+    var panierSQL = result.rows[0].panier;
+    var panierJSON = JSON.parse(JSON.stringify(req.session.panier));
+    var articlesPanier = [];
+
+    // conversion panierSQL en panierSession
+    for (let index = 0; index < panierSQL.length; index++) {
+      const articleId = panierSQL[index];
+      const aIndex = articlesPanier.findIndex((a) => a.id === articleId);
+      if (aIndex === -1) {
+        articlesPanier.push({ id: articleId, quantity: 1 });
+      } else {
+        articlesPanier[aIndex]["id"] = articleId;
+        articlesPanier[aIndex]["quantity"]++;
+      }
+    }
+
+    panierJSON.articles = articlesPanier;
+    panierJSON.panier_sql = panierSQL;
+
+    res.json(panierJSON);
+  }
 });
 
 /*
@@ -66,7 +100,6 @@ router.get("/panier", (req, res) => {
  * Le body doit contenir l'id de l'article, ainsi que la quantité voulue
  */
 router.post("/panier", async function (req, res) {
-  // CGSoft E2.2
   const articleId = parseInt(req.body.id);
   const articleQuantity = parseInt(req.body.quantity);
   var sessionPannier = req.session.panier;
@@ -99,16 +132,20 @@ router.post("/panier", async function (req, res) {
   // ajouter l'article ainsi que sa quantité au panier
   var articlePanier = { id: articleId, quantity: articleQuantity };
   sessionPannier.articles.push(articlePanier);
-  sessionPannier.panier_sql.push(articleId);
 
   //si utilisateur connecté mise à jour du panier sql
   if (!isNaN(req.session.userId)) {
-    const sql = "UPDATE users SET panier=array_append(panier,$1) WHERE id=$2";
-    await client.query({
-      text: sql,
-      values: [articleId, req.session.userId],
-    });
+    for (let i = 0; i < articleQuantity; i++) {
+      const sql = "UPDATE users SET panier=array_append(panier,$1) WHERE id=$2";
+      client.query({
+        text: sql,
+        values: [articleId, req.session.userId],
+      });
+      sessionPannier.panier_sql.push(articleId);
+    }
   }
+
+  console.log("POST panierSQL:", sessionPannier.panier_sql);
 
   // on envoie l'article mis à jour
   res.json(articlePanier);
@@ -140,7 +177,6 @@ router.delete("/panier/clear", async function (req, res) {
  * Le panier est ensuite supprimé grâce à req.session.destroy()
  */
 router.post("/panier/pay", async function (req, res) {
-  // CGSoft E5
   const id = req.session.userId;
 
   // Si l’utilisateur n’est pas connecté, lui retourner une erreur 401
@@ -163,13 +199,18 @@ router.post("/panier/pay", async function (req, res) {
   const email = result.rows[0]["email"];
 
   //enregistrement de la commande
-  /*
-  const sql2 = 'INSERT INTO commandes (date,articles,price,user_id)\nVALUES ($1,$2,$3,$4)'
+  const sql2 =
+    "INSERT INTO commandes (date,articles,price,user_id)\nVALUES ($1,$2,$3,$4)";
   await client.query({
-    text:sql2,
-    values:[new Date().toISOString(),req.session.panier.panier_sql,"price",id]  //trouvé un moyen d'obtenir le prix total
-  })
-*/
+    text: sql2,
+    values: [
+      new Date().toISOString(),
+      req.session.panier.panier_sql,
+      "price",
+      id,
+    ], //trouvé un moyen d'obtenir le prix total
+  });
+
   //suppression du panier coté sql
   const sql3 = "UPDATE users SET panier=$1 WHERE id=$2";
   await client.query({
@@ -186,7 +227,6 @@ router.post("/panier/pay", async function (req, res) {
  * Le body doit contenir la quantité voulue
  */
 router.put("/panier/:articleId", async function (req, res) {
-  // CGSoft E2.3
   const articleId = parseInt(req.params.articleId);
   const articleQuantity = parseInt(req.body.quantity);
   var sessionPannier = req.session.panier;
@@ -212,7 +252,7 @@ router.put("/panier/:articleId", async function (req, res) {
   if (indexArticle != -1) {
     const quantity_diff =
       sessionPannier.articles[indexArticle]["quantity"] - articleQuantity;
-    console.log(quantity_diff);
+    console.log("quantity_diff:", quantity_diff);
     sessionPannier.articles[indexArticle]["quantity"] = articleQuantity;
 
     //mise à jour du panier sql
@@ -233,7 +273,7 @@ router.put("/panier/:articleId", async function (req, res) {
           sessionPannier.panier_sql.splice(indexArticle_sql, 1);
         }
       }
-      console.log(sessionPannier.panier_sql);
+      console.log("Panier SQL:", sessionPannier.panier_sql);
 
       const sql = "UPDATE users SET panier=$1 WHERE id=$2";
       await client.query({
@@ -251,7 +291,6 @@ router.put("/panier/:articleId", async function (req, res) {
  * Cette route doit supprimer un article dans le panier
  */
 router.delete("/panier/:articleId", async function (req, res) {
-  // CGSoft E2.4
   const articleId = parseInt(req.params.articleId);
   var sessionPannier = req.session.panier;
 
@@ -334,12 +373,13 @@ router.post("/article", async (req, res) => {
   });
 
   const article = {
-    // id: articles.length + 1, faux
+    id: articles.length + 1, // pour que vue-application récupère l'id
     name: name,
     description: description,
     image: image,
     price: price,
   };
+  articles.push(article);
   // on envoie l'article ajouté à l'utilisateur
   res.json(article);
 });
@@ -424,7 +464,7 @@ router
   });
 
 /**
- * route POST /login dont l’objectif d’inscrire un utilisateur
+ * route POST /register dont l’objectif d’inscrire un utilisateur
  */
 router.post("/register", async function (req, res) {
   const email = req.body.email;
@@ -473,12 +513,15 @@ router.post("/login", async function (req, res) {
     res.status(401).json({ message: `cannot found user ${email}!` });
     return;
   }
+
+  // stocker id trouvé
+  const id = result.rows[0]["id"];
+
   // ... et que la forme hashée du mot de passe correspond à ce qui est base avec bcrypt.compare
   if (await bcrypt.compare(password, result.rows[0].password)) {
     // congrats
 
     // vérifier si l'utilisateur ne sait pas connecté
-    const id = result.rows[0]["id"];
     if (req.session.userId === id) {
       // à modifier si necessaire
       res
@@ -493,11 +536,11 @@ router.post("/login", async function (req, res) {
     res.status(401).json({ message: "bad password!" });
     return;
   }
-/*
-  // connection confirmé ici
+
+  // connexion confirmé ici
   // récupération du panier utilisateur pour synchroniser les deux paniers
   const newpaniersql = parse_panier(result.rows[0].panier, req.session.panier);
-  req.session.panier_sql = newpaniersql;
+  req.session.panier.panier_sql = newpaniersql;
   //update du panier sql (ajout des articles du panier hors connection)
 
   const sql3 = "UPDATE users SET panier=$1 WHERE id=$2";
@@ -505,7 +548,7 @@ router.post("/login", async function (req, res) {
     text: sql3,
     values: [newpaniersql, id],
   });
-*/
+
   res.json({ message: `${email} logged` });
 });
 
@@ -531,40 +574,18 @@ router.get("/me", async function (req, res) {
   res.json({ message: email });
 });
 
-/*
-router.get('/test',async function (req, res) {
-  const id=2
-  sql = "SELECT panier FROM users WHERE id=$1"
-  const result = await client.query({
-    text:sql,
-    values: [id]
-  })
-
-  var newpaniersql = parse_panier(result.rows[0].panier,req.session.panier)
-  console.log(req.session.panier.articles)
-  console.log(newpaniersql)
-  
-  res.json(result.rows)
-})
-*/
-
 //fonction ayant pour role de synchroniser les données du sql et de la session
 function parse_panier(panier_sql, panier_serveur) {
-  //ajout des information du panier serveur sql au info du panier.articles de la session
-  var already_in = false;
-  for (i = 0; i < panier_sql.length; i++) {
-    for (j = 0; j < panier_serveur.articles.length; j++) {
-      if (panier_sql[i] == panier_serveur.articles[j].id) {
-        panier_serveur.articles[j].quantity++;
-        already_in = true;
-      }
-    }
-    if (!already_in) {
-      var newarticlepanier = { id: panier_sql[i], quantity: 1 };
-      panier_serveur.articles.push(newarticlepanier);
-      already_in = false;
+  //ajout des informations du panier serveur sql au info du panier.articles de la session
+  for(id of panier_sql) {
+    var index = panier_serveur.articles.findIndex(a => a.id === id);
+    if (index !== -1) {
+      panier_serveur.articles[index].quantity++;
+    } else {
+      panier_serveur.articles.push({ id: id, quantity: 1 });
     }
   }
+
   // mise à jour du panier sql
   var newpaniersql = [];
   for (i = 0; i < panier_serveur.articles.length; i++) {
@@ -572,6 +593,8 @@ function parse_panier(panier_sql, panier_serveur) {
       newpaniersql.push(panier_serveur.articles[i].id);
     }
   }
+
+  console.log("Résultat sychro:");
   console.log(newpaniersql);
   console.log(panier_serveur.articles);
   return newpaniersql;

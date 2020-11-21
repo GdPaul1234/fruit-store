@@ -41,7 +41,7 @@
 
         <div class="pay" v-if="cacheArticleDetail.length !== 0">
           <button class="pay-button" @click="payPanier()">
-            Payer {{ panierTotal }} €
+            Payer {{ Number.parseFloat(panierTotal).toFixed(2) }} €
           </button>
           <p class="choix-livraison" v-if="choixLivraison === 'livraison'">
             dont 5 € de frais de livraison

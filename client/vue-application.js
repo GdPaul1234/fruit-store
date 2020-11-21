@@ -94,7 +94,8 @@ var app = new Vue({
       //nc récupération du panier_sql
       const panier_uptodate = await axios.get("api/panier/synch");
       //nc ajout du panier sql au panier actuel
-      this.panier.articles = panier_uptodate.panier;
+      this.panier.articles = panier_uptodate.data.panier;
+      console.log(panier_uptodate)
 
       this.loginSuccess = true;
       this.loginError = false;
