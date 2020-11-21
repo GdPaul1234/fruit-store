@@ -54,6 +54,12 @@ router.use(async (req, res, next) => {
   next();
 });
 
+
+
+/* ===========================================================================
+   ============================== GESTION PANIER =============================
+   =========================================================================== */
+
 /*
  * Cette route doit retourner le panier de l'utilisateur, grâce à req.session
  */
@@ -157,27 +163,13 @@ router.get("/panier/synch", function (req, res) {
   return;
 });
 
-//route pour reset le panier sql après payement, peu sans doute être mergé avec panier/pay
-router.delete("/panier/clear", async function (req, res) {
-  if (isNaN(req.session.userId)) {
-    req.session.panier.articles = [];
-  } else {
-    req.session.panier.articles = [];
-    req.session.panier.panier_sql = [];
-    const sql = "UPDATE users SET panier=$1 WHERE id=$2";
-    await client.query({
-      text: sql,
-      values: [req.session.panier.panier_sql, req.session.userId],
-    });
-  }
-});
-
 /*
  * Cette route doit permettre de confirmer un panier, en recevant le nom et prénom de l'utilisateur
  * Le panier est ensuite supprimé grâce à req.session.destroy()
  */
 router.post("/panier/pay", async function (req, res) {
   const id = req.session.userId;
+  const total =  Number.parseFloat(req.body.total);
 
   // Si l’utilisateur n’est pas connecté, lui retourner une erreur 401
   if (typeof id === "undefined") {
@@ -200,15 +192,15 @@ router.post("/panier/pay", async function (req, res) {
 
   //enregistrement de la commande
   const sql2 =
-    "INSERT INTO commandes (date,articles,price,user_id)\nVALUES ($1,$2,$3,$4)";
+    "INSERT INTO commandes (date,articles,total,user_id)\nVALUES ($1,$2,$3,$4)";
   await client.query({
     text: sql2,
     values: [
       new Date().toISOString(),
       req.session.panier.panier_sql,
-      "price",
+      total,
       id,
-    ], //trouvé un moyen d'obtenir le prix total
+    ],
   });
 
   //suppression du panier coté sql
@@ -218,7 +210,7 @@ router.post("/panier/pay", async function (req, res) {
     values: [[], req.session.userId],
   });
 
-  req.session.destroy();
+  //req.session.destroy();
   res.send({ message: `Merci ${email} pour votre achat` });
 });
 
@@ -336,6 +328,48 @@ router.get("/articles", async (req, res) => {
   });
   res.json(result.rows);
 });
+
+/* ===========================================================================
+   ============================= GESTION COMMANDES ===========================
+   =========================================================================== */
+
+router.get("/orders", async (req, res) => {
+  // Si utilisateur pas authentifié, pas de commande
+  const id = req.session.userId;
+
+  if (typeof id === "undefined") {
+    res.status(401).json({ message: "user not logged in!" });
+    return;
+  }
+
+  // Verifier si user est un admin, si oui, accès à toutes les commandes
+  const sql = "SELECT admin FROM users WHERE id=$1";
+  const result = await client.query({
+    text: sql,
+    values: [id],
+  })
+
+  const admin = result.rows[0].admin;
+
+  const sql2 = "SELECT * FROM commandes"
+  const result2 = await client.query({
+    text: sql2,
+  })
+
+  var commandes = result2.rows;
+
+  // Si user n'est pas admin, retourner que ses commandes
+  if (!admin) {
+    commandes = commandes.filter(commande => commande.user_id === id);
+  }
+
+  res.json({ commandes });
+
+});
+
+/* ===========================================================================
+   ============================= GESTION ARTICLES ============================
+   =========================================================================== */
 
 /**
  * Cette route crée un article.
@@ -463,6 +497,12 @@ router
     res.send({ message: "article supprimé" });
   });
 
+
+
+/* ===========================================================================
+   ============================== GESTION CLIENT =============================
+   =========================================================================== */
+
 /**
  * route POST /register dont l’objectif d’inscrire un utilisateur
  */
@@ -573,6 +613,8 @@ router.get("/me", async function (req, res) {
   const email = result.rows[0]["email"];
   res.json({ message: email });
 });
+
+/* ======================== FONCTIONS CONNEXES ======================== */
 
 //fonction ayant pour role de synchroniser les données du sql et de la session
 function parse_panier(panier_sql, panier_serveur) {

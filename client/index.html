@@ -36,7 +36,9 @@
             <router-link to="/register">S'inscrire</router-link>
             <router-link to="/login">Se connecter</router-link>
           </div>
-          <div v-else>{{ connectedUser }}</div>
+          <div v-else style="padding-left: 0">
+            <router-link to="/account">{{ connectedUser }}</router-link>
+          </div>
         </nav>
       </header>
 

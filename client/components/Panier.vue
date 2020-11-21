@@ -134,7 +134,7 @@ module.exports = {
 
     // Payer panier
     payPanier() {
-      this.$emit("pay-panier");
+      this.$emit("pay-panier", this.panierTotal);
     },
   },
 };

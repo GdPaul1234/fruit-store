@@ -11,7 +11,8 @@
         <!-- Edit off -->
         <div v-if="editingArticle.id !== item.id">
           <div class="price">
-            x{{ item.quantity }} : {{ item.quantity * item.price }} €
+            x{{ item.quantity }} :
+            {{ Number.parseFloat(item.quantity * item.price).toFixed(2) }} €
             <span class="button-container">
               <button @click="modifyPanierQuantity(item.id, item.quantity)">
                 ✏️
@@ -29,9 +30,9 @@
               min="1"
               max="99"
             />
-            <span class="price"
-              >: {{ editingArticle.quantity * item.price }} €</span
-            >
+            <span class="price">
+              : {{ Number.parseFloat(editingArticle.quantity * item.price).toFixed(2) }} €
+            </span>
             <button type="button" @click="sendModifyPanierQuantity()">
               OK
             </button>
@@ -60,12 +61,12 @@ module.exports = {
   /* https://stackoverflow.com/a/57864145 */
   computed: {
     changeData() {
-      const { articles, panier } = this
+      const { articles, panier } = this;
       return {
         articles,
-        panier
-      }
-    }
+        panier,
+      };
+    },
   },
   watch: {
     changeData: {

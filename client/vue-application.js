@@ -4,6 +4,7 @@ const Login = window.httpVueLoader("./components/user/Login.vue");
 const Panier = window.httpVueLoader("./components/Panier.vue");
 const ArticleEdit = window.httpVueLoader("./components/admin/ArticleEdit.vue");
 const ArticleDetail = window.httpVueLoader("./components/card/ArticleDetail.vue");
+const Account = window.httpVueLoader("./components/user/Account.vue");
 
 const routes = [
   { path: "/", component: Home },
@@ -12,6 +13,7 @@ const routes = [
   { path: "/panier", component: Panier },
   { path: "/edit", component: ArticleEdit },
   { path: "/p/:id", component: ArticleDetail },
+  { path: "/account", component: Account }
 ];
 
 const router = new VueRouter({
@@ -90,7 +92,6 @@ var app = new Vue({
         return;
       }
 
-      //nc les articles mis à jour n'apparaise que après refresh (je sais pas comment fonctionne reload)
       //nc récupération du panier_sql
       const panier_uptodate = await axios.get("api/panier/synch");
       //nc ajout du panier sql au panier actuel
@@ -136,9 +137,9 @@ var app = new Vue({
     },
 
     // Effectuer la requête à l’API POST /api/panier/payer pour payer le panier et supprimer la session
-    async payPanier() {
+    async payPanier(totalPanier) {
       try {
-        await axios.post("api/panier/pay");
+        await axios.post("api/panier/pay", { total: totalPanier });
         this.paiementError = false;
         this.payment = true;
 
