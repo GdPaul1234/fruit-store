@@ -44,7 +44,7 @@ router.use((req, res, next) => {
  * Recupérer articles du serveur
  */
 router.use(async (req, res, next) => {
-  const sql = "SELECT * FROM articles";
+  const sql = "SELECT * FROM articles\nORDER BY id ASC";
   const result = await client.query({
     text: sql,
   });
