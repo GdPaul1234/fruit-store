@@ -84,7 +84,8 @@ var app = new Vue({
     // Gestion login
     async loginUser(user) {
       try {
-        await axios.post("api/login", user);
+        const result = await axios.post("api/login", user);
+        this.isAdmin = result.data.admin;
       } catch (error) {
         this.loginError = true;
         this.loginSuccess = false;
@@ -152,7 +153,7 @@ var app = new Vue({
       this.panier.articles[index]["quantity"] = editArticle.quantity;
     },
 
-    // Effectuer la requête à l’API POST /api/panier/payer pour payer le panier et supprimer la session
+    // Effectuer la requête à l’API POST /api/panier/payer pour payer le panier
     async payPanier(totalPanier) {
       try {
         await axios.post("api/panier/pay", { total: totalPanier });
@@ -161,6 +162,7 @@ var app = new Vue({
 
         setInterval(() => {
           location.href = "/#/";
+          location.reload();
         }, 3000);
       } catch (error) {
         this.paiementError = true;

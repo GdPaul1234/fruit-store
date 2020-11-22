@@ -54,8 +54,6 @@ router.use(async (req, res, next) => {
   next();
 });
 
-
-
 /* ===========================================================================
    ============================== GESTION PANIER =============================
    =========================================================================== */
@@ -76,7 +74,7 @@ router.get("/panier", async (req, res) => {
       text: sql,
       values: [id],
     });
-    console.log(result.rows[0].panier)
+    console.log(result.rows[0].panier);
 
     var panierSQL = result.rows[0].panier;
     var panierJSON = JSON.parse(JSON.stringify(req.session.panier));
@@ -169,7 +167,7 @@ router.get("/panier/synch", function (req, res) {
  */
 router.post("/panier/pay", async function (req, res) {
   const id = req.session.userId;
-  const total =  Number.parseFloat(req.body.total);
+  const total = Number.parseFloat(req.body.total);
 
   // Si l’utilisateur n’est pas connecté, lui retourner une erreur 401
   if (typeof id === "undefined") {
@@ -210,7 +208,8 @@ router.post("/panier/pay", async function (req, res) {
     values: [[], req.session.userId],
   });
 
-  //req.session.destroy();
+  // nouveau panier
+  req.session.panier = new Panier();
   res.send({ message: `Merci ${email} pour votre achat` });
 });
 
@@ -347,24 +346,23 @@ router.get("/orders", async (req, res) => {
   const result = await client.query({
     text: sql,
     values: [id],
-  })
+  });
 
   const admin = result.rows[0].admin;
 
-  const sql2 = "SELECT * FROM commandes"
+  const sql2 = "SELECT * FROM commandes";
   const result2 = await client.query({
     text: sql2,
-  })
+  });
 
   var commandes = result2.rows;
 
   // Si user n'est pas admin, retourner que ses commandes
   if (!admin) {
-    commandes = commandes.filter(commande => commande.user_id === id);
+    commandes = commandes.filter((commande) => commande.user_id === id);
   }
 
   res.json({ commandes });
-
 });
 
 /* ===========================================================================
@@ -373,49 +371,50 @@ router.get("/orders", async (req, res) => {
 
 /**
  * Cette route crée un article.
- * WARNING: dans un vrai site, elle devrait être authentifiée et valider que l'utilisateur est bien autorisé
- * NOTE: lorsqu'on redémarre le serveur, l'article ajouté disparait
- *   Si on voulait persister l'information, on utiliserait une BDD (mysql, etc.)
  */
 router.post("/article", async (req, res) => {
-  const name = req.body.name;
-  const description = req.body.description;
-  const image = req.body.image;
-  const price = parseFloat(req.body.price);
-  console.log(price);
+  if (req.session.admin) {
+    const name = req.body.name;
+    const description = req.body.description;
+    const image = req.body.image;
+    const price = parseFloat(req.body.price);
+    console.log(price);
 
-  // vérification de la validité des données d'entrée
-  if (
-    typeof name !== "string" ||
-    name === "" ||
-    typeof description !== "string" ||
-    description === "" ||
-    typeof image !== "string" ||
-    image === "" ||
-    isNaN(price) ||
-    price <= 0
-  ) {
-    res.status(400).json({ message: "bad request" });
-    return;
+    // vérification de la validité des données d'entrée
+    if (
+      typeof name !== "string" ||
+      name === "" ||
+      typeof description !== "string" ||
+      description === "" ||
+      typeof image !== "string" ||
+      image === "" ||
+      isNaN(price) ||
+      price <= 0
+    ) {
+      res.status(400).json({ message: "bad request" });
+      return;
+    }
+    //éventuellemnt ajouter un test pour si un article similaire existe déja
+    const sql =
+      "INSERT INTO articles (name,description,image,price)\nVALUES ($1,$2,$3,$4)";
+    await client.query({
+      text: sql,
+      values: [name, description, image, price],
+    });
+
+    const article = {
+      id: articles.length + 1, // pour que vue-application récupère l'id
+      name: name,
+      description: description,
+      image: image,
+      price: price,
+    };
+    articles.push(article);
+    // on envoie l'article ajouté à l'utilisateur
+    res.json(article);
+  } else {
+    res.status(403).json({ message: "forbidden" });
   }
-  //éventuellemnt ajouter un test pour si un article similaire existe déja
-  const sql =
-    "INSERT INTO articles (name,description,image,price)\nVALUES ($1,$2,$3,$4)";
-  await client.query({
-    text: sql,
-    values: [name, description, image, price],
-  });
-
-  const article = {
-    id: articles.length + 1, // pour que vue-application récupère l'id
-    name: name,
-    description: description,
-    image: image,
-    price: price,
-  };
-  articles.push(article);
-  // on envoie l'article ajouté à l'utilisateur
-  res.json(article);
 });
 
 /**
@@ -467,37 +466,40 @@ router
 
   /**
    * Cette route modifie un article.
-   * WARNING: dans un vrai site, elle devrait être authentifiée et valider que l'utilisateur est bien autorisé
-   * NOTE: lorsqu'on redémarre le serveur, la modification de l'article disparait
-   *   Si on voulait persister l'information, on utiliserait une BDD (mysql, etc.)
    */
   .put(parseArticle, async (req, res) => {
-    const name = req.body.name;
-    const description = req.body.description;
-    const image = req.body.image;
-    const price = parseInt(req.body.price);
+    if (req.session.admin) {
+      const name = req.body.name;
+      const description = req.body.description;
+      const image = req.body.image;
+      const price = parseFloat(req.body.price);
 
-    const sql =
-      "UPDATE articles SET name=$1, description=$2, image=$3, price=$4 WHERE id=$5";
-    await client.query({
-      text: sql,
-      values: [name, description, image, price, req.articleId],
-    });
+      const sql =
+        "UPDATE articles SET name=$1, description=$2, image=$3, price=$4 WHERE id=$5";
+      await client.query({
+        text: sql,
+        values: [name, description, image, price, req.articleId],
+      });
 
-    res.send({ message: "article mis à jour" });
+      res.send({ message: "article mis à jour" });
+    } else {
+      res.status(403).json({ message: "forbidden" });
+    }
   })
 
   .delete(parseArticle, async (req, res) => {
-    const sql = "DELETE FROM articles WHERE id=$1";
-    await client.query({
-      text: sql,
-      values: [req.articleId],
-    });
+    if (req.session.admin) {
+      const sql = "DELETE FROM articles WHERE id=$1";
+      await client.query({
+        text: sql,
+        values: [req.articleId],
+      });
 
-    res.send({ message: "article supprimé" });
+      res.send({ message: "article supprimé" });
+    } else {
+      res.status(403).json({ message: "forbidden" });
+    }
   });
-
-
 
 /* ===========================================================================
    ============================== GESTION CLIENT =============================
@@ -556,6 +558,8 @@ router.post("/login", async function (req, res) {
 
   // stocker id trouvé
   const id = result.rows[0]["id"];
+  const admin = result.rows[0]["admin"] ? true : false;
+  req.session.admin = admin;
 
   // ... et que la forme hashée du mot de passe correspond à ce qui est base avec bcrypt.compare
   if (await bcrypt.compare(password, result.rows[0].password)) {
@@ -566,7 +570,7 @@ router.post("/login", async function (req, res) {
       // à modifier si necessaire
       res
         .status(401)
-        .json({ message: `${result.rows[0]["email"]} already connected!` });
+        .json({ message: `${result.rows[0]["email"]} already connected!`, admin: admin });
       return;
     } else {
       req.session.userId = result.rows[0]["id"];
@@ -589,14 +593,14 @@ router.post("/login", async function (req, res) {
     values: [newpaniersql, id],
   });
 
-  res.json({ message: `${email} logged` });
+  res.json({ message: `${email} logged`, admin: admin });
 });
 
 router.post("/logout", async (req, res) => {
   req.session.destroy();
 
-  res.json({ message: "user déconnecté" })
-})
+  res.json({ message: "user déconnecté" });
+});
 
 /**
  * route GET /me, qui retourne simplement l’utilisateur actuellement connecté
@@ -610,14 +614,15 @@ router.get("/me", async function (req, res) {
     return;
   }
 
-  const sql = "SELECT email FROM users WHERE id=$1";
+  const sql = "SELECT * FROM users WHERE id=$1";
   const result = await client.query({
     text: sql,
     values: [id],
   });
 
   const email = result.rows[0]["email"];
-  res.json({ message: email });
+  const admin = result.rows[0]["admin"] ? true : false;
+  res.json({ message: email, admin: admin });
 });
 
 /* ======================== FONCTIONS CONNEXES ======================== */
@@ -625,8 +630,8 @@ router.get("/me", async function (req, res) {
 //fonction ayant pour role de synchroniser les données du sql et de la session
 function parse_panier(panier_sql, panier_serveur) {
   //ajout des informations du panier serveur sql au info du panier.articles de la session
-  for(id of panier_sql) {
-    var index = panier_serveur.articles.findIndex(a => a.id === id);
+  for (id of panier_sql) {
+    var index = panier_serveur.articles.findIndex((a) => a.id === id);
     if (index !== -1) {
       panier_serveur.articles[index].quantity++;
     } else {

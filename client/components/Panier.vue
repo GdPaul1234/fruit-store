@@ -133,7 +133,7 @@ module.exports = {
     },
 
     // Payer panier
-    payPanier() {
+    async payPanier() {
       this.$emit("pay-panier", this.panierTotal);
     },
   },

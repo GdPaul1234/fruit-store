@@ -5,7 +5,7 @@
         <colgroup>
           <col style="width: 50px" />
           <col style="width: 95px" />
-          <col style="width: 80%" />
+          <col style="width: 100%" />
           <col style="width: 100px" />
         </colgroup>
         <thead>
@@ -51,6 +51,8 @@
         </tbody>
       </table>
     </div>
+
+    <button style="float: right; margin-top: 0.5rem;" @click="getOrders()">Actualiser</button>
   </div>
 </template>
 
@@ -200,7 +202,7 @@ th {
   border: none;
   border-bottom: 1px solid #eee;
   position: relative;
-  padding-left: 75px;
+  padding-left: 60px;
 }
 
 .articles-mobile td:before {
@@ -208,7 +210,7 @@ th {
   position: absolute;
   /* Top/left values mimic padding */
   left: 0;
-  width: 65px;
+  width: 50px;
   padding-right: 6px;
   white-space: nowrap;
   /* Behave like a header */
@@ -229,7 +231,7 @@ th {
   content: "Date";
 }
 .articles-mobile td:nth-of-type(3):before {
-  content: "Articles";
+  content: "Art.";
 }
 .articles-mobile td:nth-of-type(4):before {
   content: "Total";
