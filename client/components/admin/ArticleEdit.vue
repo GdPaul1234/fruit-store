@@ -30,8 +30,8 @@
       <button class="add-article" @click="addNewArticle()">➕ Ajouter</button>
     </div>
 
-    <!-- Panier vide -->
-    <div class="panier-vide" v-else>
+    <!-- Accès interdit -->
+    <div class="forbidden" v-else>
       <img
         src="https://icons.iconarchive.com/icons/custom-icon-design/flatastic-5/256/Couple-icon.png"
         alt="couple"
@@ -126,8 +126,8 @@ h2 {
   background: #275c1b;
 }
 
-/* PANIER VIDE ======================================== */
-.panier-vide {
+/* ACCES INTERDIT ======================================== */
+.forbidden {
   margin: 0 auto 20px auto;
   padding: 1rem;
   max-width: 400px;
@@ -142,14 +142,14 @@ h2 {
   align-items: center;
 }
 
-.panier-vide img {
+.forbidden img {
   height: 100%;
   max-height: 72px;
   width: auto;
   padding-right: 0.5em;
 }
 
-.panier-vide .content {
+.forbidden .content {
   border-left: 1px solid darkgray;
   padding-left: 0.5em;
 }

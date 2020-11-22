@@ -103,6 +103,22 @@ var app = new Vue({
       this.connectedUser = user.email;
     },
 
+    // Gestion disconnect
+    async logoutUser() {
+      console.log("try logout");
+      try {
+        await axios.post("api/logout");
+      } catch (error) {
+        this.loginErrorReason = `error ${error.response.status}: ${error.response.data["message"]}`;
+        return;
+      }
+
+      this.connectedUser = "";
+
+      location.href = "/#/";
+      location.reload;
+    },
+
     /*
     ===============================================================
     GESTION PANIER
@@ -145,7 +161,6 @@ var app = new Vue({
 
         setInterval(() => {
           location.href = "/#/";
-          location.reload();
         }, 3000);
       } catch (error) {
         this.paiementError = true;

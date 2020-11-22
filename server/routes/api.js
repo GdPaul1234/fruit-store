@@ -592,6 +592,12 @@ router.post("/login", async function (req, res) {
   res.json({ message: `${email} logged` });
 });
 
+router.post("/logout", async (req, res) => {
+  req.session.destroy();
+
+  res.json({ message: "user déconnecté" })
+})
+
 /**
  * route GET /me, qui retourne simplement l’utilisateur actuellement connecté
  */

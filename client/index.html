@@ -59,10 +59,12 @@
           :rerror="registerError"
           :rerror_reason="registerErrorReason"
           @register-user="registerUser"
+          @logout-user="logoutUser"
           :lsuccess="loginSuccess"
           :lerror="loginError"
           :lerror_reason="loginErrorReason"
           @login-user="loginUser"
+          :connected-user="connectedUser"
           :is-admin="isAdmin"
         ></router-view>
       </main>
