@@ -506,6 +506,24 @@ router
    =========================================================================== */
 
 /**
+ *  router permettant d'obtenir tous les utilisateurs
+ */
+router.get("/all_users", async function (req, res) {
+  if (req.session.admin) {
+    const sql = "SELECT id,email FROM users";
+    const result = await client.query({
+      text: sql,
+    });
+
+    var users
+
+    res.json({ users: result.rows })
+  } else {
+    res.status(403).json({ message: "forbidden" });
+  }
+});
+
+/**
  * route POST /register dont l’objectif d’inscrire un utilisateur
  */
 router.post("/register", async function (req, res) {
@@ -570,7 +588,10 @@ router.post("/login", async function (req, res) {
       // à modifier si necessaire
       res
         .status(401)
-        .json({ message: `${result.rows[0]["email"]} already connected!`, admin: admin });
+        .json({
+          message: `${result.rows[0]["email"]} already connected!`,
+          admin: admin,
+        });
       return;
     } else {
       req.session.userId = result.rows[0]["id"];

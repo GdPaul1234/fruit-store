@@ -5,6 +5,7 @@ const Panier = window.httpVueLoader("./components/Panier.vue");
 const ArticleEdit = window.httpVueLoader("./components/admin/ArticleEdit.vue");
 const ArticleDetail = window.httpVueLoader("./components/card/ArticleDetail.vue");
 const Account = window.httpVueLoader("./components/user/Account.vue");
+const ArticleCommandeTable = window.httpVueLoader("./components/admin/AllCommandeTable.vue");
 
 const routes = [
   { path: "/", component: Home },
@@ -13,7 +14,8 @@ const routes = [
   { path: "/panier", component: Panier },
   { path: "/edit", component: ArticleEdit },
   { path: "/p/:id", component: ArticleDetail },
-  { path: "/account", component: Account }
+  { path: "/account", component: Account },
+  { path: "/orders", component: ArticleCommandeTable }
 ];
 
 const router = new VueRouter({
@@ -55,6 +57,7 @@ var app = new Vue({
     try {
       const res3 = await axios.get("/api/me");
       this.connectedUser = res3.data.message;
+      this.isAdmin = res3.data.admin;
     } catch (error) {
       this.connectedUser = "";
     }

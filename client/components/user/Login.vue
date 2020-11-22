@@ -8,7 +8,7 @@
       <a href="/#/register">Créer un nouveau compte</a>
     </div>
     <div class="success" v-if="lsuccess">
-      Connexion réussie ! <a href="/#/">Commencer mes courses</a>
+      Connexion réussie ! <a href="/#/" v-show="!isAdmin">Commencer mes courses</a>
     </div>
 
     <!-- Formulaire de connexion -->
@@ -42,6 +42,7 @@ module.exports = {
     lsuccess: { type: Boolean, default: false },
     lerror: { type: Boolean, default: false },
     lerror_reason: { type: String },
+    isAdmin: { type: Boolean, default: false }
   },
   data() {
     return {

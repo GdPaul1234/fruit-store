@@ -1,17 +1,19 @@
 <template>
   <div>
-    <div class="table-container">
+    <div class="table-container" v-if="isAdmin">
       <table :class="classTable">
         <colgroup>
           <col style="width: 50px" />
           <col style="width: 95px" />
-          <col style="width: 100%" />
+          <col style="width: 30%" />
+          <col style="width: 70%" />
           <col style="width: 100px" />
         </colgroup>
         <thead>
           <tr>
             <th>id</th>
             <th>Date</th>
+            <th>Email</th>
             <th>Articles</th>
             <th>Total</th>
           </tr>
@@ -20,6 +22,7 @@
           <tr v-for="commande in commandes" :key="commande.id">
             <td>{{ commande.id }}</td>
             <td>{{ commande.date }}</td>
+            <td style="overflow: hidden; text-overflow: ellipsis;">{{ commande.email }}</td>
             <td>
               <details>
                 <summary>{{ commande.summary }}</summary>
@@ -32,7 +35,7 @@
                       {{ article.quantity }}x {{ article.detail.name }}
                     </span>
 
-                    <span style="flex-shrink: 0;">
+                    <span style="flex-shrink: 0">
                       {{
                         Number.parseFloat(
                           article.quantity * article.detail.price
@@ -50,9 +53,25 @@
           </tr>
         </tbody>
       </table>
+
+      <button style="float: right; margin-top: 0.5rem" @click="getOrders()">
+        Actualiser
+      </button>
     </div>
 
-    <button style="float: right; margin-top: 0.5rem;" @click="getOrders()">Actualiser</button>
+    <!-- Accès interdit -->
+    <div class="forbidden" v-else>
+      <img
+        src="https://icons.iconarchive.com/icons/custom-icon-design/flatastic-5/256/Couple-icon.png"
+        alt="couple"
+      />
+      <div class="content">
+        <p>
+          Vous êtes perdu !<br />
+          <a href="/#/">Revenir à l'accueil</a>
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -60,6 +79,7 @@
 module.exports = {
   props: {
     articles: { type: Array, default: [] },
+    isAdmin: { type: Boolean },
   },
   data() {
     return {
@@ -78,16 +98,23 @@ module.exports = {
     });
 
     await this.getOrders();
+    console.log("OK");
   },
   methods: {
     async getOrders() {
       var result = await axios.get("/api/orders");
       this.commandes = result.data.commandes;
 
+      // récupérer users
+      var result2 = await axios.get("/api/all_users");
+      var users = result2.data.users;
+
       for (var commande of this.commandes) {
         // Transformer la date postgre en quelque chose de lisible pour des humains
         var date = new Date(commande.date);
         commande.date = date.toLocaleDateString();
+
+        commande.email = users.find((u) => u.id === commande.user_id).email;
 
         // transformer panierSQL en panierJSON
         commande = this.articlesSQL_to_articlesJSON(commande);
@@ -101,8 +128,6 @@ module.exports = {
       for (articleId of commande.articles) {
         const aIndex = articles.findIndex((a) => a.id === articleId);
         if (aIndex === -1) {
-          // recherche détail article
-          var detail = this.articles.find((a) => a.id === articleId);
           // recherche détail article
           var detail = this.articles.find((a) => a.id === articleId);
           if (typeof detail == "undefined") {
@@ -127,20 +152,21 @@ module.exports = {
 
 <style scoped>
 ul {
-    margin-block-start: 0.5em;
-    margin-block-end: 1em;
-    padding-inline-start: 20px;
+  margin-block-start: 0.5em;
+  margin-block-end: 1em;
+  padding-inline-start: 20px;
 }
 
 li {
- display: flex;
- height: 18px;
- overflow: hidden;
- justify-content: space-between;
+  display: flex;
+  height: 18px;
+  overflow: hidden;
+  justify-content: space-between;
 }
 
 .table-container {
   overflow: auto;
+  margin: 0 1rem;
 }
 
 .articles-table {
@@ -239,9 +265,40 @@ th {
   content: "Date";
 }
 .articles-mobile td:nth-of-type(3):before {
-  content: "Art.";
+  content: "mail";
 }
 .articles-mobile td:nth-of-type(4):before {
+  content: "Art.";
+}
+.articles-mobile td:nth-of-type(5):before {
   content: "Total";
+}
+
+/* ACCES INTERDIT ======================================== */
+.forbidden {
+  margin: 0 auto 20px auto;
+  padding: 1rem;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 1em;
+  background-image: radial-gradient(
+    circle farthest-corner at 10% 20%,
+    rgba(234, 249, 249, 0.67) 0.1%,
+    rgba(239, 249, 251, 0.63) 90.1%
+  );
+  display: flex;
+  align-items: center;
+}
+
+.forbidden img {
+  height: 100%;
+  max-height: 72px;
+  width: auto;
+  padding-right: 0.5em;
+}
+
+.forbidden .content {
+  border-left: 1px solid darkgray;
+  padding-left: 0.5em;
 }
 </style>
