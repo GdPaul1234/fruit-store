@@ -350,7 +350,7 @@ router.get("/orders", async (req, res) => {
 
   const admin = result.rows[0].admin;
 
-  const sql2 = "SELECT * FROM commandes";
+  const sql2 = "SELECT * FROM commandes\nORDER BY id ASC";
   const result2 = await client.query({
     text: sql2,
   });
