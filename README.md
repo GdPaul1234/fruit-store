@@ -6,13 +6,13 @@
 3.	Dans le fichier `server/routes/api` à la ligne 11, inscrire le mot de passe admin de votre base de données local.
 
 4.	Installer les modules nécessaires au fonctionnement avec la commande suivante dans la console PowerShell ouverte à la racine du projet :
-```
-npm install express bcrypt axios
-```
+     ```
+    npm install express bcrypt axios
+    ```
 
 5.	Lancer le site avec la commande   
-```
-npm start
-```
+    ```
+    npm start
+    ```
 
 6.	Accéder au site en cliquant sur le [lien](http://localhost:3000/#/) ou depuis un navigateur à l’adresse local suivante http://localhost:3000/#/
